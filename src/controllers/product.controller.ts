@@ -33,7 +33,6 @@ export class ProductController extends Controller {
   ): Promise<ProductPaginatedResponse> {
     try {
       const response = await ProductService.getAllProducts(queries);
-
       return {
         message: "success",
         data: response,

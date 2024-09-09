@@ -62,10 +62,10 @@ class ProductRepository {
       const totalItems = await ItemModel.countDocuments(mongoFilter);
 
       return {
-        products,
         totalItems,
         totalPages: Math.ceil(totalItems / limit),
         currentPage: page,
+        products,
       };
     } catch (error) {
       console.error(
