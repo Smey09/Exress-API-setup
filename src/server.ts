@@ -1,6 +1,6 @@
 import app from "./app";
 import connectToMongoDB from "./database/connection";
-import configs from "./config"; // Import the configuration
+import configs from "./config";
 
 async function run() {
   try {
