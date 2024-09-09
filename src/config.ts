@@ -1,6 +1,6 @@
-import dotenv from 'dotenv';
-import path from 'path';
-import Joi from 'joi';
+import dotenv from "dotenv";
+import path from "path";
+import Joi from "joi";
 
 type Config = {
   env: string;
@@ -11,7 +11,7 @@ type Config = {
 // Function to load and validate environment variables
 function loadConfig(): Config {
   // Determine the environment and set the appropriate .env file
-  const env = process.env.NODE_ENV || 'development';
+  const env = process.env.NODE_ENV || "development";
   const envPath = path.resolve(__dirname, `./configs/.env.${env}`);
   dotenv.config({ path: envPath });
 
@@ -20,7 +20,9 @@ function loadConfig(): Config {
     NODE_ENV: Joi.string().required(),
     PORT: Joi.number().default(3000),
     MONGODB_URL: Joi.string().required(),
-  }).unknown().required();
+  })
+    .unknown()
+    .required();
 
   // Validate the environment variables
   const { value: envVars, error } = envVarsSchema.validate(process.env);
