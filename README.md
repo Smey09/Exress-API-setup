@@ -88,3 +88,13 @@
     ├── app.ts
     ├── config.ts
     └── server.ts
+
+## Update
+
+    - Run : yarn global add pm2
+    - Add this script to package.json
+
+        "start:local": "pm2 start ecosystem.config.local.js",
+        "start": "pm2 start ecosystem.config.js",
+        "restart": "pm2 reload ecosystem.config.js",
+        "db:insert": "ts-node src/database/scripts/insert-data.ts"
