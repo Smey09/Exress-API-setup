@@ -21,7 +21,7 @@
       "@/*": ["./"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "ecosystem.config.js"],
   "exclude": ["node_modules", "**/*.spec.ts"],
   // Allow ts-node to run with tsconfig-paths
   "ts-node": {
