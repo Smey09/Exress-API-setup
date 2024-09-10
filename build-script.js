@@ -2,7 +2,6 @@ const esbuild = require("esbuild");
 const path = require("path");
 const fs = require("fs-extra");
 const copy = require("esbuild-plugin-copy").default;
-
 // Issue
 // 1: Esbuild could not load swagger.json
 // 2: SwaggerUIBundle is not defined in production
