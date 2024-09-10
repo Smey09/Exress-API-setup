@@ -2,7 +2,7 @@ import app from "./app";
 import connectToMongoDB from "./database/connection";
 
 //config port
-import configs from "./config";
+import configs from "@/src/config";
 
 async function run() {
   try {
