@@ -6,15 +6,14 @@ const insertData = async () => {
   try {
     await connectToMongoDB();
 
-    // Example data to insert
     const data = [
       {
-        name: "Test Insert 1",
+        name: "Test Insert 1 -2",
         category: "furniture",
         price: 299.99,
       },
       {
-        name: "Test Insert 2",
+        name: "Test Insert 2 -2",
         category: "furniture",
         price: 299.99,
       },
@@ -26,7 +25,6 @@ const insertData = async () => {
   } catch (error) {
     console.error("Error inserting data", error);
   } finally {
-    // Ensure to disconnect after operations
     mongoose.disconnect();
   }
 };
