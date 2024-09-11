@@ -52,6 +52,13 @@ esbuild
       path.resolve(__dirname, "build/ecosystem.config.js")
     );
     console.log("Ecosystem Config copied successfully!");
+
+    // (3) Copy .env.development after ensuring the build was successful
+    fs.copySync(
+      path.resolve(__dirname, "src/configs/.env.development"),
+      path.resolve(__dirname, "build/configs/.env.local")
+    );
+    console.log(".env.development copied successfully!");
   })
   .catch((error) => {
     console.error("Build failed:", error);
