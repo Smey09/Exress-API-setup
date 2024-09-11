@@ -10,7 +10,8 @@
     "start:local": "pm2 restart ecosystem.config.local.js || pm2 start ecosystem.config.local.js",
     "start": "pm2 start ecosystem.config.js",
     "restart": "pm2 reload ecosystem.config.js",
-    "db:insert": "ts-node src/database/scripts/insert-data.ts"
+    "db:insert": "ts-node src/database/scripts/insert-data.ts",
+    "run:js": "NODE_ENV=development node build/server.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
@@ -24,6 +25,7 @@
     "@types/node": "^22.5.4",
     "@types/swagger-ui-express": "^4.1.6",
     "esbuild": "^0.23.1",
+    "esbuild-plugin-alias": "^0.2.1",
     "esbuild-plugin-copy": "^2.1.1",
     "nodemon": "^3.1.4",
     "swagger-ui-express": "^5.0.1",

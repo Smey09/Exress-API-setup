@@ -12,11 +12,6 @@ const insertData = async () => {
         category: "furniture",
         price: 299.99,
       },
-      {
-        name: "Test Insert 2 -2",
-        category: "furniture",
-        price: 299.99,
-      },
       // Add more items here if needed
     ];
 
