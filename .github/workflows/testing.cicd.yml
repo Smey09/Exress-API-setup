@@ -26,7 +26,11 @@ jobs:
         run: yarn install # Install all dependencies
 
       - name: Run build
-        run: yarn build # Executes the build script defined in package.json
+        env:
+          PORT: ${{ secrets.PORT }}
+          NODE_ENV: ${{ secrets.NODE_ENV }}
+          MONGODB_URL: ${{ secrets.MONGODB_URL }}
+        run: yarn build
 
       - name: Run tests
         env:
