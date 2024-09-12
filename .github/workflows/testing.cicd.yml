@@ -3,12 +3,8 @@ name: CI/CD Pipeline for Service
 on:
   pull_request:
     branches: [main] # Specify branches as needed
-    paths:
-      - "src/**" # Adjust path to match the relevant service directory
   push:
     branches: [main] # Specify branches as needed
-    paths:
-      - "src/**" # Adjust path to match the relevant service directory
 
 jobs:
   build:
