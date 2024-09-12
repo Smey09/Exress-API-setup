@@ -2,9 +2,9 @@ name: CI/CD Pipeline for Service
 
 on:
   pull_request:
-    branches: [main] # Specify branches as needed
+    branches: [main]
   push:
-    branches: [main] # Specify branches as needed
+    branches: [main]
 
 jobs:
   build:
@@ -47,11 +47,10 @@ jobs:
           name: build-artifact
           path: ./build
 
-      - name: Debug GitHub Secrets
+      - name: Debug SSH Connection
         run: |
-          echo "Server IP: ${{ secrets.SERVER_IP }}"
-          echo "Username: ${{ secrets.SERVER_USERNAME }}"
-          echo "SSH Key Length: $(echo "${{ secrets.SSH_PRIVATE_KEY }}" | wc -c) bytes"
+          echo "Checking SSH connection..."
+          ssh -o "StrictHostKeyChecking=no" -i /home/runner/.ssh/id_rsa username@${{ secrets.SERVER_IP }} "echo 'SSH Connection Successful'"
 
       - name: Prepare Deployment Directories
         uses: appleboy/ssh-action@v0.1.0
