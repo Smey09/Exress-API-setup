@@ -34,10 +34,10 @@ jobs:
 
       - name: Run tests
         env:
-          PORT: ${{ secrets.PORT }} # Use the PORT environment variable
-          NODE_ENV: ${{ secrets.NODE_ENV }} # Use NODE_ENV environment variable
-          MONGODB_URL: ${{ secrets.MONGODB_URL }} # Use MONGODB_URL environment variable
-        run: yarn test # Run your tests
+          PORT: ${{ secrets.PORT }}
+          NODE_ENV: ${{ secrets.NODE_ENV }}
+          MONGODB_URL: ${{ secrets.MONGODB_URL }}
+        run: yarn test
 
       - name: Archive build artifacts
         uses: actions/upload-artifact@v4
