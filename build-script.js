@@ -56,11 +56,16 @@ esbuild
     );
     console.log("Ecosystem Config copied successfully!");
 
-    fs.copySync(
-      path.resolve(__dirname, "src/configs/.env.development"),
-      path.resolve(__dirname, "build/configs/.env.local")
-    );
-    console.log("Environment file copied successfully!");
+    const envFilePath = path.resolve(__dirname, "src/configs/.env.development");
+    if (fs.existsSync(envFilePath)) {
+      fs.copySync(
+        envFilePath,
+        path.resolve(__dirname, "build/configs/.env.local")
+      );
+      console.log("Environment file copied successfully!");
+    } else {
+      console.error("Environment file does not exist:", envFilePath);
+    }
 
     fs.copySync(
       path.resolve(__dirname, "package.json"),
