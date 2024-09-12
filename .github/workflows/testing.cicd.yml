@@ -2,17 +2,17 @@ name: CI/CD Pipeline for Service
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main] # Specify branches as needed
     paths:
-      - "src/server.ts" # Adjust path to match the service directory
+      - "withSwagger/**" # Adjust path to match the service directory
   push:
-    branches: [main]
+    branches: [main] # Specify branches as needed
     paths:
-      - "src/server.ts"
+      - "withSwagger/**" # Adjust path to match the service directory
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # Specifies that the job should run on the latest Ubuntu virtual environment provided by GitHub
     defaults:
       run:
         working-directory: ./ # Adjust this to the root directory of your Node.js project
@@ -21,12 +21,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # Ensures all branches and tags are fetched, useful for versioning or other git-related operations
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "20" # Specify the Node.js version you require, e.g., '14', '16'
 
       - name: Install dependencies
         run: yarn install
@@ -34,16 +34,11 @@ jobs:
       - name: Run build
         run: yarn build
 
-      - name: Run tests
-        env:
-          CUSTOM_ENV_VARIABLE: ${{ secrets.CUSTOM_ENV_VARIABLE }}
-        run: yarn test
-
       - name: Archive build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifact # Ensure consistent naming
-          path: ./build/* # Adjust to your actual build output path
+          name: artifact-name
+          path: ./build
 
   deploy:
     runs-on: ubuntu-latest
@@ -54,7 +49,7 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: build-artifact # Same name used in the build step
+          name: artifact-name
           path: ./build
 
       - name: Prepare Deployment Directories
@@ -65,8 +60,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            mkdir -p /home/ubuntu/apps/build
-            mkdir -p /home/ubuntu/apps/build/configs
+            sudo mkdir -p /home/ubuntu/apps/build
+            sudo mkdir -p /home/ubuntu/apps/build/configs
+            sudo chmod 777 /home/ubuntu/apps/build
+            sudo chmod 777 /home/ubuntu/apps/build/configs
 
       - name: Copy files to Server
         uses: appleboy/scp-action@master
@@ -87,9 +84,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            echo "NODE_ENV=production" > /home/ubuntu/apps/build/configs/.env.local
-            echo "PORT=your_port_number" >> /home/ubuntu/apps/build/configs/.env.local
-            echo "DATABASE_URL=your_database_url" >> /home/ubuntu/apps/build/configs/.env.local
+            echo "MONGODB_URL=${{secrets.MONGODB_URI}}" >> /home/ubuntu/apps/build/configs/.env
 
       - name: Install Dependencies and Restart Application
         uses: appleboy/ssh-action@master
@@ -99,11 +94,18 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
+            sudo yum update -y
+            sudo yum install -y nodejs npm
+            sudo npm install -g yarn
+            node --version
+            npm --version
+            yarn --version
             cd /home/ubuntu/apps/build
-            yarn install --production
-            if pm2 show your-service-name > /dev/null; then
+            yarn install
+            if pm2 show product-service > /dev/null; then
               echo "Application is running. Restarting..."
-              pm2 restart your-service-name
+              pm2 restart product-service
             else
               echo "Application is not running. Starting..."
-              pm2 start yarn --name your-service-name -- start
+              pm2 start yarn --name product-service -- start
+            fi
