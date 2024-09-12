@@ -3,44 +3,35 @@ name: CI/CD Pipeline for Service
 on:
   pull_request:
     branches: [main]
-    paths:
-      - "src/server.ts"
   push:
     branches: [main]
-    paths:
-      - "src/server.ts"
 
 jobs:
   build:
-    runs-on: ubuntu-latest # Specifies that the job should run on the latest Ubuntu virtual environment provided by GitHub
-    defaults:
-      run:
-        working-directory: ./ # Adjust this to the root directory of your Node.js project
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 # This step checks out your repository under $GITHUB_WORKSPACE, so your workflow can access it
-        with:
-          fetch-depth: 0 # Ensures all branches and tags are fetched, useful for versioning or other git-related operations
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4 # This step sets up a Node.js environment with a specified version
+        uses: actions/setup-node@v4
         with:
-          node-version: "20" # Specify the Node.js version you require, e.g., '14', '16'
+          node-version: "20"
 
       - name: Install dependencies
-        run: yarn install # Runs yarn install to install all dependencies defined in your package.json
+        run: yarn install
 
       - name: Run build
-        run: yarn build # Executes the build script defined in your package.json
+        run: yarn build
 
       - name: Run tests
         env:
-          CUSTOM_ENV_VARIABLE: ${{ secrets.CUSTOM_ENV_VARIABLE }} # Replace with actual environment variables needed for testing
-        run: yarn test # Executes tests using yarn. Customize this command based on your test runner
+          CUSTOM_ENV_VARIABLE: ${{ secrets.CUSTOM_ENV_VARIABLE }}
+        run: yarn test
 
       - name: Archive build artifacts
-        uses: actions/upload-artifact@v4 # Archives build artifacts for use in later jobs or for deployment
+        uses: actions/upload-artifact@v4
         with:
-          name: artifact-name # Optionally change the name of the artifact
-          path: ./path/to/artifacts # Adjust this to where your build outputs artifacts, e.g., './build'
+          name: artifact-name
+          path: ./build # Replace this with your actual build path
