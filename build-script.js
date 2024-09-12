@@ -115,6 +115,13 @@ esbuild
       path.resolve(__dirname, "build/configs/.env.local")
     );
     console.log("Ecosystem Config copied successfully!");
+
+    // 4 package
+    fs.copySync(
+      path.resolve(__dirname, "package.json"),
+      path.resolve(__dirname, "build/package.json")
+    );
+    console.log("Package.json copied successfully!");
   })
   .catch((error) => {
     console.error("Build failed:", error);
