@@ -11,7 +11,7 @@
     "start": "pm2 start ecosystem.config.js",
     "restart": "pm2 reload ecosystem.config.js",
     "db:insert": "ts-node src/database/scripts/insert-data.ts",
-    "run:js": "NODE_ENV=development node build/server.js"
+    "run:js": "NODE_ENV=development MONGODB_URL=mongodb+srv://Bookstore:bookstore123@bookscluster.xfo1s.mongodb.net/MyNewDataBase node build/server.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
