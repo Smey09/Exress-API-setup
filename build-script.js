@@ -78,13 +78,22 @@ esbuild
       copy({
         assets: {
           from: [
-            "../node_modules/swagger-ui-dist/*.css",
-            "../node_modules/swagger-ui-dist/*.js",
-            "../node_modules/swagger-ui-dist/*.png",
+            "./node_modules/swagger-ui-dist/*.css",
+            "./node_modules/swagger-ui-dist/*.js",
+            "./node_modules/swagger-ui-dist/*.png",
           ],
-          to: ["./public/swagger-assets"], // Copy assets to a public folder
+          to: ["./"], // Copy assets to a public folder
         },
       }),
+      // Custom plugin to log success after copy
+      {
+        name: "log-success-after-copy",
+        setup(build) {
+          build.onEnd((result) => {
+            console.log("Assets copied successfully");
+          });
+        },
+      },
     ],
     resolveExtensions: [".ts", ".js"],
     define: {

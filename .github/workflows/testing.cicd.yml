@@ -2,17 +2,17 @@ name: CI/CD Pipeline for Service
 
 on:
   pull_request:
-    branches: [main] # Specify branches as needed
+    branches: [main]
     paths:
-      - "withSwagger/**" # Adjust path to match the service directory
+      - "src/server.ts" # Adjust path to match the service directory
   push:
-    branches: [main] # Specify branches as needed
+    branches: [main]
     paths:
-      - "withSwagger/**" # Adjust path to match the service directory
+      - "src/server.ts"
 
 jobs:
   build:
-    runs-on: ubuntu-latest # Specifies that the job should run on the latest Ubuntu virtual environment provided by GitHub
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./ # Adjust this to the root directory of your Node.js project
@@ -21,12 +21,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Ensures all branches and tags are fetched, useful for versioning or other git-related operations
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20" # Specify the Node.js version you require, e.g., '14', '16'
+          node-version: "20"
 
       - name: Install dependencies
         run: yarn install
@@ -34,11 +34,16 @@ jobs:
       - name: Run build
         run: yarn build
 
+      - name: Run tests
+        env:
+          CUSTOM_ENV_VARIABLE: ${{ secrets.CUSTOM_ENV_VARIABLE }}
+        run: yarn test
+
       - name: Archive build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: artifact-name
-          path: ./build
+          name: build-artifact # Ensure consistent naming
+          path: ./build/* # Adjust to your actual build output path
 
   deploy:
     runs-on: ubuntu-latest
@@ -49,7 +54,7 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: artifact-name
+          name: build-artifact # Same name used in the build step
           path: ./build
 
       - name: Prepare Deployment Directories
@@ -60,10 +65,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            sudo mkdir -p /home/ubuntu/apps/build
-            sudo mkdir -p /home/ubuntu/apps/build/configs
-            sudo chmod 777 /home/ubuntu/apps/build
-            sudo chmod 777 /home/ubuntu/apps/build/configs
+            mkdir -p /home/ubuntu/apps/build
+            mkdir -p /home/ubuntu/apps/build/configs
 
       - name: Copy files to Server
         uses: appleboy/scp-action@master
@@ -84,7 +87,9 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            echo "MONGODB_URL=${{secrets.MONGODB_URI}}" >> /home/ubuntu/apps/build/configs/.env
+            echo "NODE_ENV=production" > /home/ubuntu/apps/build/configs/.env.local
+            echo "PORT=your_port_number" >> /home/ubuntu/apps/build/configs/.env.local
+            echo "DATABASE_URL=your_database_url" >> /home/ubuntu/apps/build/configs/.env.local
 
       - name: Install Dependencies and Restart Application
         uses: appleboy/ssh-action@master
@@ -94,18 +99,11 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            sudo yum update -y
-            sudo yum install -y nodejs npm
-            sudo npm install -g yarn
-            node --version
-            npm --version
-            yarn --version
             cd /home/ubuntu/apps/build
-            yarn install
-            if pm2 show product-service > /dev/null; then
+            yarn install --production
+            if pm2 show your-service-name > /dev/null; then
               echo "Application is running. Restarting..."
-              pm2 restart product-service
+              pm2 restart your-service-name
             else
               echo "Application is not running. Starting..."
-              pm2 start yarn --name product-service -- start
-            fi
+              pm2 start yarn --name your-service-name -- start
