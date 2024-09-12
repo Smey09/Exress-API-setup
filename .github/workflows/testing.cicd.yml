@@ -2,36 +2,105 @@ name: CI/CD Pipeline for Service
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main] # Specify branches as needed
+    paths:
+      - "src/**" # Adjust path to match the relevant service directory
   push:
-    branches: [main]
+    branches: [main] # Specify branches as needed
+    paths:
+      - "src/**" # Adjust path to match the relevant service directory
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # Specifies that the job should run on the latest Ubuntu virtual environment
+    defaults:
+      run:
+        working-directory: . # Root directory of your Node.js project
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4 # Checks out your repository
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "20" # Specify the Node.js version you require
 
       - name: Install dependencies
-        run: yarn install
+        run: yarn install # Install all dependencies
 
       - name: Run build
-        run: yarn build
+        run: yarn build # Executes the build script defined in package.json
 
       - name: Run tests
         env:
-          CUSTOM_ENV_VARIABLE: ${{ secrets.CUSTOM_ENV_VARIABLE }}
-        run: yarn test
+          CUSTOM_ENV_VARIABLE: ${{ secrets.CUSTOM_ENV_VARIABLE }} # Add your environment variables
+        run: yarn test # Run your tests
 
       - name: Archive build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: artifact-name
-          path: ./build # Replace this with your actual build path
+          name: build-artifact # Consistent artifact name
+          path: ./build # Adjust the path to where your build artifacts are located
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build # Ensure build completes successfully before deploying
+    if: github.ref == 'refs/heads/main' # Deploy only on the main branch
+
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifact # Use the same artifact name as in the upload
+          path: ./build # Path to store the downloaded artifact
+
+      - name: Prepare Deployment Directories
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            mkdir -p /home/ubuntu/apps/build
+            mkdir -p /home/ubuntu/apps/build/configs
+
+      - name: Copy files to Server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          source: "./build/*" # Ensure this is the correct path to your build artifacts
+          target: "/home/ubuntu/apps/build"
+          strip_components: 1 # Adjust based on your directory depth
+
+      - name: Create .env File
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            echo "NODE_ENV=production" > /home/ubuntu/apps/build/.env
+            echo "PORT=3000" >> /home/ubuntu/apps/build/.env
+            echo "MONGODB_URL=${{ secrets.MONGODB_URL }}" >> /home/ubuntu/apps/build/.env
+
+      - name: Install Dependencies and Restart Application
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd /home/ubuntu/apps/build
+            yarn install --production
+            if pm2 show your-service-name > /dev/null; then
+              pm2 restart your-service-name
+            else
+              pm2 start server.js --name your-service-name
+            fi
