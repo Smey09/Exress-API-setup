@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - "src/server.ts" # Adjust path to match the service directory
+      - "src/server.ts"
   push:
     branches: [main]
     paths:
@@ -12,98 +12,35 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # Specifies that the job should run on the latest Ubuntu virtual environment provided by GitHub
     defaults:
       run:
         working-directory: ./ # Adjust this to the root directory of your Node.js project
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4 # This step checks out your repository under $GITHUB_WORKSPACE, so your workflow can access it
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # Ensures all branches and tags are fetched, useful for versioning or other git-related operations
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4 # This step sets up a Node.js environment with a specified version
         with:
-          node-version: "20"
+          node-version: "20" # Specify the Node.js version you require, e.g., '14', '16'
 
       - name: Install dependencies
-        run: yarn install
+        run: yarn install # Runs yarn install to install all dependencies defined in your package.json
 
       - name: Run build
-        run: yarn build
+        run: yarn build # Executes the build script defined in your package.json
 
       - name: Run tests
         env:
-          CUSTOM_ENV_VARIABLE: ${{ secrets.CUSTOM_ENV_VARIABLE }}
-        run: yarn test
+          CUSTOM_ENV_VARIABLE: ${{ secrets.CUSTOM_ENV_VARIABLE }} # Replace with actual environment variables needed for testing
+        run: yarn test # Executes tests using yarn. Customize this command based on your test runner
 
       - name: Archive build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4 # Archives build artifacts for use in later jobs or for deployment
         with:
-          name: build-artifact # Ensure consistent naming
-          path: ./build/* # Adjust to your actual build output path
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/main'
-
-    steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifact # Same name used in the build step
-          path: ./build
-
-      - name: Prepare Deployment Directories
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script: |
-            mkdir -p /home/ubuntu/apps/build
-            mkdir -p /home/ubuntu/apps/build/configs
-
-      - name: Copy files to Server
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          source: "./build/*"
-          target: "/home/ubuntu/apps/build"
-          strip_components: 1
-
-      - name: Create .env File
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script: |
-            echo "NODE_ENV=production" > /home/ubuntu/apps/build/configs/.env.local
-            echo "PORT=your_port_number" >> /home/ubuntu/apps/build/configs/.env.local
-            echo "DATABASE_URL=your_database_url" >> /home/ubuntu/apps/build/configs/.env.local
-
-      - name: Install Dependencies and Restart Application
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script: |
-            cd /home/ubuntu/apps/build
-            yarn install --production
-            if pm2 show your-service-name > /dev/null; then
-              echo "Application is running. Restarting..."
-              pm2 restart your-service-name
-            else
-              echo "Application is not running. Starting..."
-              pm2 start yarn --name your-service-name -- start
+          name: artifact-name # Optionally change the name of the artifact
+          path: ./path/to/artifacts # Adjust this to where your build outputs artifacts, e.g., './build'
