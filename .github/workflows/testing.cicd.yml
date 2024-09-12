@@ -47,10 +47,15 @@ jobs:
           name: build-artifact
           path: ./build
 
-      - name: Debug SSH Connection
+      - name: Setup SSH Key
         run: |
-          echo "Checking SSH connection..."
-          ssh -o "StrictHostKeyChecking=no" -i /home/runner/.ssh/id_rsa username@${{ secrets.SERVER_IP }} "echo 'SSH Connection Successful'"
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Check SSH Connection
+        run: |
+          ssh -o "StrictHostKeyChecking=no" -i ~/.ssh/id_rsa ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} "echo 'SSH Connection Successful'"
 
       - name: Prepare Deployment Directories
         uses: appleboy/ssh-action@v0.1.0
