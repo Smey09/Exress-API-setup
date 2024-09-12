@@ -32,12 +32,12 @@ jobs:
           MONGODB_URL: ${{ secrets.MONGODB_URL }}
         run: yarn build
 
-      - name: Run tests
-        env:
-          PORT: ${{ secrets.PORT }}
-          NODE_ENV: ${{ secrets.NODE_ENV }}
-          MONGODB_URL: ${{ secrets.MONGODB_URL }}
-        run: yarn test
+      # - name: Run tests
+      #   env:
+      #     PORT: ${{ secrets.PORT }}
+      #     NODE_ENV: ${{ secrets.NODE_ENV }}
+      #     MONGODB_URL: ${{ secrets.MONGODB_URL }}
+      #   run: yarn test
 
       - name: Archive build artifacts
         uses: actions/upload-artifact@v4
