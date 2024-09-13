@@ -85,15 +85,36 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            source /home/ubuntu/.nvm/nvm.sh
-            source /home/ubuntu/.profile
+            # Check if NVM is installed and source it
+            if [ -f /home/ubuntu/.nvm/nvm.sh ]; then
+              source /home/ubuntu/.nvm/nvm.sh
+            else
+              echo "NVM is not installed. Please install NVM."
+              exit 1
+            fi
 
+            # Check if Yarn and PM2 are installed
+            if ! command -v yarn &> /dev/null; then
+              echo "Yarn not found. Installing Yarn..."
+              npm install -g yarn
+            fi
+
+            if ! command -v pm2 &> /dev/null; then
+              echo "PM2 not found. Installing PM2..."
+              npm install -g pm2
+            fi
+
+            # Navigate to application directory
             cd /home/ubuntu/apps/build
+
+            # Install production dependencies
             yarn install --production
+
+            # Restart or start the application
             if pm2 show product-service > /dev/null; then
               echo "Application is running. Restarting..."
-              yarn restart
+              pm2 restart product-service
             else
               echo "Application is not running. Starting..."
-              yarn start
+              pm2 start server.js --name product-service
             fi
