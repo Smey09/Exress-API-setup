@@ -85,15 +85,27 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            # Check if NVM is installed and source it
-            if [ -f /home/ubuntu/.nvm/nvm.sh ]; then
-              source /home/ubuntu/.nvm/nvm.sh
-            else
-              echo "NVM is not installed. Please install NVM."
-              exit 1
+            # Ensure NVM is installed
+            if [ ! -f /home/ubuntu/.nvm/nvm.sh ]; then
+              echo "NVM not found. Installing NVM..."
+              curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+              export NVM_DIR="/home/ubuntu/.nvm"
+              [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             fi
 
-            # Check if Yarn and PM2 are installed
+            # Load NVM
+            export NVM_DIR="/home/ubuntu/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+            # Ensure Node.js and NPM are installed
+            if ! type node > /dev/null 2>&1; then
+              echo "Node.js not found. Installing Node.js..."
+              nvm install 20
+              nvm use 20
+              nvm alias default 20
+            fi
+
+            # Ensure Yarn and PM2 are installed
             if ! command -v yarn &> /dev/null; then
               echo "Yarn not found. Installing Yarn..."
               npm install -g yarn
