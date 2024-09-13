@@ -60,7 +60,7 @@ esbuild
     if (fs.existsSync(envFilePath)) {
       fs.copySync(
         envFilePath,
-        path.resolve(__dirname, "build/configs/.env.local")
+        path.resolve(__dirname, "build/configs/.env.production")
       );
       console.log("Environment file copied successfully!");
     } else {
