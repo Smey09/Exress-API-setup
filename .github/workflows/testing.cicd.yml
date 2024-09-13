@@ -105,4 +105,3 @@ jobs:
               pm2 restart your-service-name
             else
               pm2 start server.js --name your-service-name
-            fi
