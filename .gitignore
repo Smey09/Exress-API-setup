@@ -7,4 +7,3 @@ build/configs/.env.local
 
 .DS_Store 
 build
-scripts
