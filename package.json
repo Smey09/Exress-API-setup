@@ -10,7 +10,8 @@
     "start:local": "pm2 restart ecosystem.config.local.js || pm2 start ecosystem.config.local.js",
     "start": "pm2 start ecosystem.config.js",
     "restart": "pm2 reload ecosystem.config.js",
-    "db:insert": "ts-node src/database/scripts/insert-data.ts"
+    "db:insert": "ts-node src/database/scripts/insert-data.ts",
+    "test": "node build/server.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
