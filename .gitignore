@@ -6,8 +6,4 @@ build/configs/.env.local
 
 
 .DS_Store 
-<<<<<<< HEAD
-build/
-=======
 build
->>>>>>> parent of 617fd88 (build v5)
