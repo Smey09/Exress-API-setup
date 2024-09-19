@@ -23,13 +23,13 @@
    - run : docker run -p 3000:3000 -d --name my-container-app my-app-dev
      - `p 3000:3000`: Maps port 3000 on the host to port 3000 in the container.
      - `d`: Runs the container in the background (detached mode).
-     - `-name ****my-container-app`: Names the container `dev-app`.
+     - `-name my-container-app`: Names the container `dev-app`.
      - `my-app-dev`: Specifies the Docker image to use.
      - This command starts a container from the `my-app-dev` image, running it in the background with port 3000 exposed.
 
 4. **How to Start and Stop Container**
 
-   - run : \*\*\*\*`docker ps` to find the container ID or name by listing the running containers.
+   - run : `docker ps` to find the container ID or name by listing the running containers.
    - run : `docker start <id_Container>` or `<name_Container>`
    - run : `docker stop <id_Container>` or `<name_Container>`
 
@@ -47,7 +47,7 @@
 
 7. **How to go inside Container or access running :**
 
-   - run : \*\*\*\*`docker ps` to find the container ID or name by listing the running containers.
+   - run : `docker ps` to find the container ID or name by listing the running containers.
    - run : `docker exec -it <container_id> /bin/bash` or `/bin/sh` or `sh`
    - example : `docker exec -it my-container-app sh`
 
