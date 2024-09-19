@@ -91,47 +91,60 @@
   - example : `docker run -d nginx`
   - This runs an Nginx container in the background.
 
-1.  **`v` (Volume)**
+9.  **`v` (Volume)**
     - Used with `docker run` to mount a volume or bind-mount a directory from the host into the container. It allows you to persist data and share data between the host and container.
       - example : docker run -v /host/path:/container/path nginx
       - This mounts `/host/path` from the host into `/container/path` in the container.
-2.  **`f` (File)**
+10. **`f` (File)**
+
     - Used with `docker-compose` to specify a custom Compose file. By default, `docker-compose` looks for a file named `docker-compose.yml`, but you can use `-f` to specify a different file.
       - example : `docker-compose -f my-compose-file.yml up`
       - This uses `my-compose-file.yml` instead of the default `docker-compose.yml`.
-3.  **`p` (Port)**
+
+11. **`p` (Port)**
 
     - Used with `docker run` to map a port on the host to a port in the container.
       - exmaple : `docker run -p 8080:80 nginx`
       - This maps port 8080 on the host to port 80 in the container.
 
-4.  `t` (TTY)
+12. `t` (TTY)
 
-- Used with `docker run` to allocate a pseudo-TTY. Often used in combination with `-i` to run a container interactively.
-  - example : `docker run -it ubuntu`
-  - This runs an Ubuntu container interactively with a TTY.
+    - Used with `docker run` to allocate a pseudo-TTY. Often used in combination with `-i` to run a container interactively.
+      - example : `docker run -it ubuntu`
+      - This runs an Ubuntu container interactively with a TTY.
 
-1.  **`i` (Interactive)**
+13. **`i` (Interactive)**
+
     - Used with `docker run` to keep STDIN open, allowing you to interact with the container.
       - example : `docker run -it ubuntu`
       - This runs an Ubuntu container interactively with STDIN open.
-2.  **`a` (Attach)**
+
+14. **`a` (Attach)**
+
     - Used with `docker logs` to attach to the logs of a container. Useful for viewing the logs in real time.
       - example : `docker logs -f my_container`
       - This follows (tails) the logs of `my_container`.
-3.  **`-rm`**
+
+15. **`-rm`**
+
     - Used with `docker run` to automatically remove the container when it exits.
       - example : `docker run --rm ubuntu`
       - This runs an Ubuntu container that will be removed automatically after it exits.
-4.  **`e` (Environment Variable)**
+
+16. **`e` (Environment Variable)**
+
     - Used with `docker run` to set environment variables in the container.
       - example : `docker run -e MY_VAR=value nginx`
       - This sets the environment variable `MY_VAR` to `value` in the Nginx container.
-5.  **`-network`**
+
+17. **`-network`**
+
     - Used with `docker run` to specify a network for the container to connect to.
       - example : `docker run --network my_network nginx`
       - This connects the Nginx container to `my_network`.
-6.  **`l` (Label)**
+
+18. **`l` (Label)**
+
     - Used with `docker build` and `docker run` to add metadata to images or containers.
       - example : `docker build -t my_image -l version=1.0 .`
       - This tags the built image with a label `version=1.0`.
