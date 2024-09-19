@@ -11,10 +11,9 @@ services:
     env_file: ./src/configs/.env.development
     environment:
       - DOCKER_ENV=true
+      - NODE_ENV=development
     volumes:
       - ./src:/app/src # Hot reloading, any change in src
-      - app_logs:/app/logs
-      - app_data:/app/data
     depends_on:
       - mongo
 
@@ -31,6 +30,4 @@ services:
       - mongo_data:/data/db
 
 volumes:
-  app_logs: # Named volume for logs
-  app_data: # Named volume for data
   mongo_data: # Volume for MongoDB data
