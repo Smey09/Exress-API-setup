@@ -12,4 +12,10 @@ services:
     environment:
       - DOCKER_ENV=true
     volumes:
-      - ./src:/app/src # HOT RELOADING, ANY CHANGE IN SRC FOLDER OUR APP WILL RESTART
+      - ./src:/app/src # Hot reloading, any change in src
+      - app_logs:/app/logs
+      - app_data:/app/data
+
+volumes:
+  app_logs: # Named volume for logs
+  app_data: # Named volume for data
