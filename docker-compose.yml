@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile.dev
     restart: always
     ports:
-      - 4000:3000
+      - "4000:3000"
     env_file: ./src/configs/.env.development
     environment:
       - DOCKER_ENV=true
@@ -15,7 +15,22 @@ services:
       - ./src:/app/src # Hot reloading, any change in src
       - app_logs:/app/logs
       - app_data:/app/data
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    container_name: mongodb_container
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - mongo_data:/data/db
 
 volumes:
   app_logs: # Named volume for logs
   app_data: # Named volume for data
+  mongo_data: # Volume for MongoDB data

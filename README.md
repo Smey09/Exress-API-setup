@@ -1,100 +1,137 @@
-## Install
+## Docker Command
 
-    - yarn install or npm i
+1. **How to create image :**
+   - Create `Dockerfile` or `Dockerfile.dev`
+   - run : docker build -f `<Dockerfile_name>` -t `<name_for_image>` .
+     - example : `docker build -f Dockerfile.dev -t my-app-dev .`
+     - `-f Dockerfile.dev`: Specifies the Dockerfile.
+     - `-t my-app-dev`: Tags the created Docker image with the name `my-app-dev`.
+     - **`.`**: location of the `Dockerfile`
+     - This command builds a Docker image using `Dockerfile.dev` and tags it as `my-app-dev`.
+   - to show all images :
+     - run : `docker images`
+2. **How to delete image :**
+   - run : `docker ps` to show list of containers
+   - copy `image ID` that you want to `delete`
+   - run : `docker rmi -f <image_ID>`
+3. **How to run and create Docker Container**
+   - run : docker run -p 3000:3000 -d --name my-container-app my-app-dev
+     - `p 3000:3000`: Maps port 3000 on the host to port 3000 in the container.
+     - `d`: Runs the container in the background (detached mode).
+     - `-name ****my-container-app`: Names the container `dev-app`.
+     - `my-app-dev`: Specifies the Docker image to use.
+     - This command starts a container from the `my-app-dev` image, running it in the background with port 3000 exposed.
+4. **How to Start and Stop Container**
+   - run : \*\*\*\*`docker ps` to find the container ID or name by listing the running containers.
+   - run : `docker start <id_Container>` or `<name_Container>`
+   - run : `docker stop <id_Container>` or `<name_Container>`
+5. **How to Check only Container running :**
+   - run : `docker ps`
+6. **How to Check all Container :**
+   - run : `docker ps -a`
+   - how to short or format it :
+     - run : `docker ps -a --format "table {{.ID}}\t{{.Image}}”`
+     - run : `docker ps -a --format "{{.ID}}\t{{.Image}}”` No tables
+       - `\t` use for get space
+7. **How to go inside Container or access running :**
+   - run : \*\*\*\*`docker ps` to find the container ID or name by listing the running containers.
+   - run : `docker exec -it <container_id> /bin/bash` or `/bin/sh` or `sh`
+   - example : `docker exec -it my-container-app sh`
+8. **How to logs into Container when it running**
+   - run : `docker logs -f <container_name>`
+   - example : `docker logs -f express_part_01`
+9. **How to Create and inspect volume in docker**
+   - run : `docker volume create <volume_name>`
+   - run : `docker volume inspect <volume_name>`
 
-## To Run project
+---
 
-    - yarn dev
-    -> http://localhost:3000/v1/products
+# Summary Command line on Docker
 
-## How to config it
+1. **Containers Summary**
 
-     - Create :  .env.local
-        * build/configs/.env.local
+- To list all running containers:
+  - run : `docker ps`
+- To list all containers (including stopped ones):
+  - run : `docker ps -a`
 
-    - Create :  .env.development
-        * src/configs/.env.development
+2. **Images Summary**
 
-## in side the file, you can put both with :
+- To list all Docker images:
+  - run : `docker images`
 
-    - PORT=your_port
-    - NODE_ENV=development
-    - MONGODB_URL=mongodb+srv://<user_name>:<password>@bookscluster.xfo1s.mongodb.net/...
+3. **Volumes Summary**
 
-![2024-09-09 15 36 32](https://github.com/user-attachments/assets/f7a84964-5c5b-4f88-b5ea-8e6ed7a908e1)
+- To list all Docker volumes:
+  - run : `docker volume ls`
 
-## Project Structure
+4. **Networks Summary**
 
-    Project Folder Structure
-    ├── build/              # Compiled files
-    ├── node_modules/       # Project dependencies
-    ├── src/                # Source files
-    │   ├── configs/        # Configuration files for the application
-    │   ├── controllers/    # Handles incoming requests and send responses
-    │   ├── database/       # Database connection logic, models # and repositories
-    │   ├── docs/           # Swagger/OpenAPI documentation files
-    │   ├── middlewares/    # Express middleware for request processing
-    │   ├── routes/         # Route definitions linking requests to controllers
-    │   ├── schema/         # Scheme to validate product creation input
-    │   ├── services/       # Business logic and data access code
-    │   ├── utils/          # Utility functions and helpers
-    │   ├── app.ts          # Initializes and configures the application
-    │   ├── config.ts       # configures file .env
-    │   └── server.ts       # Entry point for the application, starts the server
-    ├── build-script.js     # Script for compiling TypeScript using esbuild
-    ├── nodemon.json        # Nodemon configuration for development
-    ├── package.json        # Manages dependencies and project metadata
-    ├── tsconfig.json       # TypeScript compiler configuration
-    └── tsoa.json           # tsoa configuration for routes and documentation
+- To list all Docker networks:
+  - run : `docker network ls`
 
---->
+5. **System-wide Summary**
 
-## In Folder src Detail :
+- To display an overview of Docker system usage (e.g., disk usage, volumes, images):
+  - run : `docker system df`
 
-    src
-    ├── configs/
-    │   └── .env.development
-    ├── controllers
-    │   ├── product.controller.ts
-    │   └── types
-    │       ├── product-request.type.ts
-    │       ├── product-response.types.ts
-    │       └── user-response.type.ts
-    ├── database
-    │   ├── connection.ts
-    │   ├── models
-    │   │   └── product.model.ts
-    │   └── repositories
-    │       ├── product.repository.ts
-    │       └── types
-    │            └── product-repository.type.ts
-    ├── docs
-    │   └── swagger.json
-    ├── middlewares
-    │   ├── global-error.ts
-    │   └── validate-input.ts
-    ├── routes
-    │   └── v1
-    │       └── routes.ts
-    ├── schema
-    │   └── product.schema.ts
-    ├── services
-    │   └── product.service.ts
-    ├── utils
-    │   ├── constants
-    │   │   ├── app-error-message.ts
-    │   │   └── status-code.ts
-    │   └── errors.ts
-    ├── app.ts
-    ├── config.ts
-    └── server.ts
+6. **Detailed System-wide Information**
 
-## Update
+- To view detailed information about the Docker installation, including containers, images, and resources:
+  - run : `docker info`
 
-    - Run : yarn global add pm2
-    - Add this script to package.json
+7. **Docker Compose Summary**
 
-        "start:local": "pm2 start ecosystem.config.local.js",
-        "start": "pm2 start ecosystem.config.js",
-        "restart": "pm2 reload ecosystem.config.js",
-        "db:insert": "ts-node src/database/scripts/insert-data.ts"
+- To view the status of services in a Docker Compose setup:
+  - run : `docker-compose ps`
+
+8.  `d` (Detached Mode)
+
+- Used with `docker run` to run a container in the background (detached mode). This allows you to keep the container running without attaching your terminal to it.
+  - example : `docker run -d nginx`
+  - This runs an Nginx container in the background.
+
+1.  **`v` (Volume)**
+    - Used with `docker run` to mount a volume or bind-mount a directory from the host into the container. It allows you to persist data and share data between the host and container.
+      - example : docker run -v /host/path:/container/path nginx
+      - This mounts `/host/path` from the host into `/container/path` in the container.
+2.  **`f` (File)**
+    - Used with `docker-compose` to specify a custom Compose file. By default, `docker-compose` looks for a file named `docker-compose.yml`, but you can use `-f` to specify a different file.
+      - example : `docker-compose -f my-compose-file.yml up`
+      - This uses `my-compose-file.yml` instead of the default `docker-compose.yml`.
+3.  **`p` (Port)**
+
+    - Used with `docker run` to map a port on the host to a port in the container.
+      - exmaple : `docker run -p 8080:80 nginx`
+      - This maps port 8080 on the host to port 80 in the container.
+
+4.  `t` (TTY)
+
+- Used with `docker run` to allocate a pseudo-TTY. Often used in combination with `-i` to run a container interactively.
+  - example : `docker run -it ubuntu`
+  - This runs an Ubuntu container interactively with a TTY.
+
+1.  **`i` (Interactive)**
+    - Used with `docker run` to keep STDIN open, allowing you to interact with the container.
+      - example : `docker run -it ubuntu`
+      - This runs an Ubuntu container interactively with STDIN open.
+2.  **`a` (Attach)**
+    - Used with `docker logs` to attach to the logs of a container. Useful for viewing the logs in real time.
+      - example : `docker logs -f my_container`
+      - This follows (tails) the logs of `my_container`.
+3.  **`-rm`**
+    - Used with `docker run` to automatically remove the container when it exits.
+      - example : `docker run --rm ubuntu`
+      - This runs an Ubuntu container that will be removed automatically after it exits.
+4.  **`e` (Environment Variable)**
+    - Used with `docker run` to set environment variables in the container.
+      - example : `docker run -e MY_VAR=value nginx`
+      - This sets the environment variable `MY_VAR` to `value` in the Nginx container.
+5.  **`-network`**
+    - Used with `docker run` to specify a network for the container to connect to.
+      - example : `docker run --network my_network nginx`
+      - This connects the Nginx container to `my_network`.
+6.  **`l` (Label)**
+    - Used with `docker build` and `docker run` to add metadata to images or containers.
+      - example : `docker build -t my_image -l version=1.0 .`
+      - This tags the built image with a label `version=1.0`.
