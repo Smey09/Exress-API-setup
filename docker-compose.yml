@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  ubuntu-docker:
+    container_name: express_part_01
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: always
+    ports:
+      - 4000:3000
+    env_file: ./src/configs/.env.development
+    environment:
+      - DOCKER_ENV=true
+    volumes:
+      - ./src:/app/src # HOT RELOADING, ANY CHANGE IN SRC FOLDER OUR APP WILL RESTART

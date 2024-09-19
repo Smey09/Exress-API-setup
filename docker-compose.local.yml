@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  express_part_01:
+    image: express_part_01:latest
+    container_name: express_part_01
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+    restart: always
+    ports:
+      - 4000:3000
+    env_file: ./src/configs/.env.development
+    environment:
+      - DOCKER_ENV=true
