@@ -9,12 +9,17 @@ export interface IItem {
 }
 
 // Schema definition
-const itemSchema = new Schema({
-  name: { type: String, require: true },
-  category: { type: String, require: true },
-  price: { type: Number, require: true },
-  // imageUrl: { type: String, required: true },
-});
+const itemSchema = new Schema(
+  {
+    name: { type: String, require: true },
+    category: { type: String, require: true },
+    price: { type: Number, require: true },
+    // imageUrl: { type: String, required: true },
+  },
+  {
+    versionKey: false, // Disables the `__v` field globally
+  }
+);
 
 // Create a model from the schema
 const ItemModel = model<IItem>("Products", itemSchema);

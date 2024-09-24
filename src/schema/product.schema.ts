@@ -18,10 +18,10 @@ const productCreateSchema = yup.object({
     .required("Price is required")
     .positive("Price must be a positive number")
     .min(0.01, "Price must be greater than 0.01"),
-  image: yup
-    .string()
-    .url("Image URL must be a valid URL")
-    .required("Image URL is required"),
+  // image: yup
+  //   .string()
+  //   .url("Image URL must be a valid URL")
+  //   .required("Image URL is required"),
 });
 
 export default productCreateSchema;
