@@ -1,16 +1,15 @@
-// src/controllers/product.controller.ts
 import {
   Controller,
   Route,
-  Body,
   Post,
-  Path,
   Get,
   Put,
-  Response,
+  Path,
   Delete,
-  Middlewares,
+  Response,
   Queries,
+  UploadedFile,
+  Request,
 } from "tsoa";
 import {
   ProductCreateRequest,
@@ -18,8 +17,6 @@ import {
   ProductUpdateRequest,
 } from "../controllers/types/product-request.type";
 import ProductService from "../services/product.service";
-import validateRequest from "../middlewares/validate-input";
-import productCreateSchema from "../schema/product.schema";
 import {
   ProductPaginatedResponse,
   ProductResponse,
@@ -46,23 +43,30 @@ export class ProductController extends Controller {
   }
 
   @Post()
-  @Response(201, "Created Success")
-  @Middlewares(validateRequest(productCreateSchema))
   public async createItem(
-    @Body() requestBody: ProductCreateRequest
+    @Request() req: any, // Access the entire request
+    @UploadedFile() file: Express.MulterS3.File | undefined // Image file uploaded
   ): Promise<ProductResponse> {
     try {
-      const newProduct = await ProductService.createProduct(requestBody);
+      console.log(req.body); // Log the request body
+      console.log(file); // Log the uploaded file
+
+      const requestBody = req.body as ProductCreateRequest;
+      const imageUrl = file
+        ? `https://${process.env.S3_BUCKET_NAME}.s3.amazonaws.com/${file.key}` // Construct S3 URL
+        : null;
+
+      const newProduct = await ProductService.createProduct(
+        requestBody,
+        imageUrl
+      );
 
       return {
         message: "success",
-        data: {
-          name: newProduct.name,
-          category: newProduct.category,
-          price: newProduct.price,
-        },
+        data: newProduct,
       };
     } catch (error) {
+      console.error("Error creating product:", error);
       throw error;
     }
   }
@@ -77,6 +81,7 @@ export class ProductController extends Controller {
         data: product,
       };
     } catch (error) {
+      console.error(`Error fetching product by id: ${error}`);
       throw error;
     }
   }
@@ -84,16 +89,31 @@ export class ProductController extends Controller {
   @Put("{id}")
   public async updateItem(
     @Path() id: string,
-    @Body() requestBody: ProductUpdateRequest
+    @Request() req: any, // Access the entire request
+    @UploadedFile() file?: Express.MulterS3.File // Optional uploaded file for updates
   ): Promise<ProductResponse> {
     try {
+      console.log(req.body); // Log the request body
+      console.log(file); // Log the uploaded file
+
+      const requestBody = req.body as ProductUpdateRequest; // Extract body
+
+      const imageUrl = file
+        ? `https://${process.env.S3_BUCKET_NAME}.s3.amazonaws.com/${file.key}` // Construct S3 URL
+        : null;
+
       const updatedProduct = await ProductService.updateProduct(
         id,
-        requestBody
+        requestBody,
+        imageUrl
       );
 
-      return { message: "success", data: updatedProduct };
+      return {
+        message: "success",
+        data: updatedProduct,
+      };
     } catch (error) {
+      console.error(`Error updating product: ${error}`);
       throw error;
     }
   }
@@ -104,6 +124,7 @@ export class ProductController extends Controller {
     try {
       await ProductService.deleteProduct(id);
     } catch (error) {
+      console.error(`Error deleting product: ${error}`);
       throw error;
     }
   }

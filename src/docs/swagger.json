@@ -112,43 +112,6 @@
 				],
 				"type": "object",
 				"additionalProperties": false
-			},
-			"ProductCreateRequest": {
-				"properties": {
-					"name": {
-						"type": "string"
-					},
-					"category": {
-						"type": "string"
-					},
-					"price": {
-						"type": "number",
-						"format": "double"
-					}
-				},
-				"required": [
-					"name",
-					"category",
-					"price"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"ProductUpdateRequest": {
-				"properties": {
-					"name": {
-						"type": "string"
-					},
-					"category": {
-						"type": "string"
-					},
-					"price": {
-						"type": "number",
-						"format": "double"
-					}
-				},
-				"type": "object",
-				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -227,9 +190,6 @@
 								}
 							}
 						}
-					},
-					"201": {
-						"description": "Created Success"
 					}
 				},
 				"security": [],
@@ -237,9 +197,18 @@
 				"requestBody": {
 					"required": true,
 					"content": {
-						"application/json": {
+						"multipart/form-data": {
 							"schema": {
-								"$ref": "#/components/schemas/ProductCreateRequest"
+								"type": "object",
+								"properties": {
+									"file": {
+										"type": "string",
+										"format": "binary"
+									}
+								},
+								"required": [
+									"file"
+								]
 							}
 						}
 					}
@@ -299,11 +268,17 @@
 					}
 				],
 				"requestBody": {
-					"required": true,
+					"required": false,
 					"content": {
-						"application/json": {
+						"multipart/form-data": {
 							"schema": {
-								"$ref": "#/components/schemas/ProductUpdateRequest"
+								"type": "object",
+								"properties": {
+									"file": {
+										"type": "string",
+										"format": "binary"
+									}
+								}
 							}
 						}
 					}
