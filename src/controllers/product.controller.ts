@@ -16,14 +16,14 @@ import {
   ProductCreateRequest,
   ProductGetAllRequest,
   ProductUpdateRequest,
-} from "../controllers/types/product-request.type";
-import ProductService from "../services/product.service";
-import validateRequest from "../middlewares/validate-input";
-import productCreateSchema from "../schema/product.schema";
+} from "@/controllers/types/product-request.type";
+import ProductService from "@/services/product.service";
+import validateRequest from "@/middlewares/validate-input";
 import {
   ProductPaginatedResponse,
   ProductResponse,
-} from "../controllers/types/product-response.types";
+} from "@/controllers/types/product-response.types";
+import productCreateSchema from "@/schema/product.schema";
 
 @Route("v1/products")
 export class ProductController extends Controller {

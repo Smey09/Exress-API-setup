@@ -1,5 +1,5 @@
 import { SortOrder } from "mongoose";
-import ItemModel, { IItem } from "../../database/models/product.model";
+import ItemModel, { IItem } from "@/database/models/product.model";
 import {
   ProductGetAllRepoParams,
   ProductSortParams,
@@ -7,7 +7,7 @@ import {
 import {
   ProductCreateRequest,
   ProductUpdateRequest,
-} from "../../controllers/types/product-request.type";
+} from "@/controllers/types/product-request.type";
 
 class ProductRepository {
   // Fetch all products with pagination, sorting, and filtering

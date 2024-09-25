@@ -1,6 +1,7 @@
-import { APP_ERROR_MESSAGE } from "../utils/constants/app-error-message";
-import { HTTP_STATUS_CODE } from "../utils/constants/status-code";
-import { ApplicationError } from "../utils/errors";
+import { APP_ERROR_MESSAGE } from "@/utils/constants/app-error-message";
+import { HTTP_STATUS_CODE } from "@/utils/constants/status-code";
+import { ApplicationError } from "@/utils/errors";
+
 import { NextFunction, Request, Response } from "express";
 
 export function globalErrorHandler(

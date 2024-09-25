@@ -2,9 +2,9 @@ import {
   ProductCreateRequest,
   ProductGetAllRequest,
   ProductUpdateRequest,
-} from "../controllers/types/product-request.type";
-import { IItem } from "../database/models/product.model";
-import ProductRepository from "../database/repositories/product.repository";
+} from "@/controllers/types/product-request.type";
+import { IItem } from "@/database/models/product.model";
+import ProductRepository from "@/database/repositories/product.repository";
 
 export class ProductService {
   async getAllProducts(queries: ProductGetAllRequest) {
