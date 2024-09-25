@@ -9,7 +9,7 @@ async function run() {
     await connectToMongoDB();
     app.listen(configs.port, () => {
       console.log(`Server running on port ${configs.port}...`);
-      console.log("-----------------------------------------------");
+      console.log("--------------------");
     });
   } catch (error) {
     console.error(error);

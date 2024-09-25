@@ -12,7 +12,8 @@
     "restart": "pm2 reload ecosystem.config.js",
     "db:insert": "ts-node src/database/scripts/insert-data.ts",
     "test:build": "node build/server.js",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.654.0",
