@@ -17,7 +17,8 @@
     "alwaysStrict": true,
     "pretty": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@tests/*": ["./src/test/*"]
     }
   },
   "include": ["src/**/*", "ecosystem.config.js", "tests/**/*"],

@@ -1,6 +1,6 @@
 // src/repositories/product.repository.ts
 
-import ItemModel, { IItem } from "@/database/models/product.model";
+import ItemModel, { IItem } from "../../database/models/product.model";
 import {
   ProductCreateRequest,
   ProductUpdateRequest,

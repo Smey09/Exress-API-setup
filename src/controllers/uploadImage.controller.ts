@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import multer from "multer";
 import multerS3 from "multer-s3";
 import { S3Client, ListObjectsV2Command } from "@aws-sdk/client-s3";
-import configs from "@/config";
+import configs from "../config";
 
 const uploadImage = express.Router();
 

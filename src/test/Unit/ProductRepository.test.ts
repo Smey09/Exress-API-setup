@@ -1,9 +1,9 @@
-import ProductRepository from "../src/database/repositories/product.repository";
-import ItemModel from "../src/database/models/product.model";
-import { ProductCreateRequest } from "../src/controllers/types/product-request.type";
+import ProductRepository from "../../database/repositories/product.repository";
+import ItemModel from "../../database/models/product.model";
+import { ProductCreateRequest } from "../../controllers/types/product-request.type";
 
 // Mock the ItemModel methods
-jest.mock("../src/database/models/product.model");
+jest.mock("../../database/models/product.model");
 
 describe("ProductRepository", () => {
   beforeEach(() => {

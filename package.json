@@ -13,7 +13,8 @@
     "db:insert": "ts-node src/database/scripts/insert-data.ts",
     "test:build": "node build/server.js",
     "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.654.0",
@@ -32,12 +33,14 @@
     "@types/multer": "^1.4.12",
     "@types/multer-s3": "^3.0.3",
     "@types/node": "^22.5.4",
+    "@types/supertest": "^6.0.2",
     "@types/swagger-ui-express": "^4.1.6",
     "esbuild": "^0.23.1",
     "esbuild-plugin-alias": "^0.2.1",
     "esbuild-plugin-copy": "^2.1.1",
     "jest": "^29.7.0",
     "nodemon": "^3.1.4",
+    "supertest": "^7.0.0",
     "swagger-ui-express": "^5.0.1",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",

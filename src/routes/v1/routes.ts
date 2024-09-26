@@ -11,9 +11,15 @@ import type { Request as ExRequest, Response as ExResponse, RequestHandler, Rout
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
+    "mongoose.Types.ObjectId": {
+        "dataType": "refAlias",
+        "type": {"dataType":"string","validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "IItem": {
         "dataType": "refObject",
         "properties": {
+            "_id": {"ref":"mongoose.Types.ObjectId"},
             "name": {"dataType":"string","required":true},
             "category": {"dataType":"string","required":true},
             "price": {"dataType":"double","required":true},

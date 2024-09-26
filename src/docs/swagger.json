@@ -7,8 +7,14 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
+			"mongoose.Types.ObjectId": {
+				"type": "string"
+			},
 			"IItem": {
 				"properties": {
+					"_id": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
 					"name": {
 						"type": "string"
 					},

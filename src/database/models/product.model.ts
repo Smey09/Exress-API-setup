@@ -1,7 +1,8 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 
 // Interface to describe a single document
 export interface IItem {
+  _id?: Types.ObjectId;
   name: string;
   category: string;
   price: number;

@@ -9,3 +9,8 @@ export const HTTP_STATUS_CODE = {
   SERVER_ERROR: 500,
   // Add More Status Code
 };
+
+export interface UserCreationRequestParams {
+  email: string;
+  username: string;
+}

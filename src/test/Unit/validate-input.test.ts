@@ -1,7 +1,7 @@
 // validateRequest.test.ts
 import { Request, Response, NextFunction } from "express";
 import * as yup from "yup";
-import validateRequest from "../src/middlewares/validate-input";
+import validateRequest from "../../middlewares/validate-input";
 
 describe("validateRequest middleware", () => {
   let req: Partial<Request>;
