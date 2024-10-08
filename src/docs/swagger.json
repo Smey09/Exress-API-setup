@@ -334,6 +334,239 @@
 					}
 				]
 			}
+		},
+		"/auth/sign-up": {
+			"post": {
+				"operationId": "SignUp",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"properties": {
+												"response": {
+													"properties": {
+														"userConfirmed": {
+															"type": "boolean"
+														},
+														"username": {
+															"type": "string"
+														}
+													},
+													"required": [
+														"userConfirmed",
+														"username"
+													],
+													"type": "object"
+												},
+												"statusCode": {
+													"type": "number",
+													"format": "double"
+												}
+											},
+											"required": [
+												"response",
+												"statusCode"
+											],
+											"type": "object"
+										},
+										{
+											"properties": {
+												"response": {
+													"type": "string"
+												},
+												"statusCode": {
+													"type": "number",
+													"format": "double"
+												}
+											},
+											"required": [
+												"response",
+												"statusCode"
+											],
+											"type": "object"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"agent": {
+										"type": "string"
+									},
+									"password": {
+										"type": "string"
+									},
+									"email": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"password",
+									"email"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/verify": {
+			"post": {
+				"operationId": "Verify",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"response": {
+											"type": "string"
+										},
+										"statusCode": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"required": [
+										"response",
+										"statusCode"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"code": {
+										"type": "string"
+									},
+									"email": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"code",
+									"email"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/sign-in": {
+			"post": {
+				"operationId": "SignIn",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"properties": {
+												"response": {
+													"properties": {
+														"refreshToken": {
+															"type": "string"
+														},
+														"idToken": {
+															"type": "string"
+														},
+														"accessToken": {
+															"type": "string"
+														}
+													},
+													"required": [
+														"refreshToken",
+														"idToken",
+														"accessToken"
+													],
+													"type": "object"
+												},
+												"statusCode": {
+													"type": "number",
+													"format": "double"
+												}
+											},
+											"required": [
+												"response",
+												"statusCode"
+											],
+											"type": "object"
+										},
+										{
+											"properties": {
+												"response": {
+													"type": "string"
+												},
+												"statusCode": {
+													"type": "number",
+													"format": "double"
+												}
+											},
+											"required": [
+												"response",
+												"statusCode"
+											],
+											"type": "object"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"password": {
+										"type": "string"
+									},
+									"email": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"password",
+									"email"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
 		}
 	},
 	"servers": [
