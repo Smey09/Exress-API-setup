@@ -1,85 +1,94 @@
+// src/services/AwsAuth.service.ts
 import {
   CognitoIdentityProviderClient,
   SignUpCommand,
-  AdminConfirmSignUpCommand,
   AdminInitiateAuthCommand,
+  ConfirmSignUpCommand,
+  AdminDeleteUserCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
-import { config } from "dotenv";
+import * as crypto from "crypto";
+import dotenv from "dotenv";
 
-// Load environment variables from .env file
-config();
+dotenv.config();
 
-// Create a Cognito Identity Provider client
-const client = new CognitoIdentityProviderClient({
-  region: process.env.AWS_COGNITO_REGION,
+const cognitoClient = new CognitoIdentityProviderClient({
+  region: process.env.AWS_REGION,
 });
 
-// Function to sign up a new user
-async function signUp(email: string, password: string, agent: string = "none") {
+// Helper function to generate the secret hash
+const generateSecretHash = (
+  username: string,
+  clientId: string,
+  clientSecret: string
+): string => {
+  return crypto
+    .createHmac("SHA256", clientSecret)
+    .update(username + clientId)
+    .digest("base64");
+};
+
+// Sign up user
+export const signUpUser = async (email: string, password: string) => {
+  const clientId = process.env.COGNITO_CLIENT_ID!;
+  const clientSecret = process.env.COGNITO_CLIENT_SECRET!;
+  const secretHash = generateSecretHash(email, clientId, clientSecret);
+
   const command = new SignUpCommand({
-    ClientId: process.env.AWS_COGNITO_CLIENT_ID!,
+    ClientId: clientId,
     Username: email,
     Password: password,
-    UserAttributes: [
-      { Name: "email", Value: email },
-      { Name: "custom:agent", Value: agent },
-    ],
+    UserAttributes: [{ Name: "email", Value: email }],
+    SecretHash: secretHash,
   });
 
-  try {
-    const result = await client.send(command);
-    const response = {
-      username: result.UserSub,
-      userConfirmed: result.UserConfirmed,
-    };
-    return { statusCode: 201, response };
-  } catch (error) {
-    return { statusCode: 422, response: (error as Error).message };
-  }
-}
+  return cognitoClient.send(command);
+};
 
-// Function to verify a new user's email
-async function verify(email: string) {
-  const command = new AdminConfirmSignUpCommand({
-    UserPoolId: process.env.AWS_COGNITO_USER_POOL_ID!,
-    Username: email,
-  });
+// Sign in user
+export const signInUser = async (email: string, password: string) => {
+  const clientId = process.env.COGNITO_CLIENT_ID!;
+  const clientSecret = process.env.COGNITO_CLIENT_SECRET!;
+  const secretHash = generateSecretHash(email, clientId, clientSecret);
 
-  try {
-    await client.send(command);
-    return { statusCode: 200, response: "User confirmed successfully" };
-  } catch (error) {
-    return { statusCode: 422, response: (error as Error).message };
-  }
-}
-
-// Function to sign in an existing user
-async function signIn(email: string, password: string) {
   const command = new AdminInitiateAuthCommand({
-    UserPoolId: process.env.AWS_COGNITO_USER_POOL_ID!,
-    ClientId: process.env.AWS_COGNITO_CLIENT_ID!,
     AuthFlow: "ADMIN_NO_SRP_AUTH",
+    UserPoolId: process.env.COGNITO_USER_POOL_ID!,
+    ClientId: clientId,
     AuthParameters: {
       USERNAME: email,
       PASSWORD: password,
+      SECRET_HASH: secretHash,
     },
   });
 
-  try {
-    const result = await client.send(command);
-    const token = {
-      accessToken: result.AuthenticationResult?.AccessToken,
-      idToken: result.AuthenticationResult?.IdToken,
-      refreshToken: result.AuthenticationResult?.RefreshToken,
-    };
-    return { statusCode: 200, response: token }; // Return the token without decoding
-  } catch (error) {
-    return {
-      statusCode: 400,
-      response: (error as Error).message || JSON.stringify(error),
-    };
-  }
-}
+  const response = await cognitoClient.send(command);
+  return response.AuthenticationResult;
+};
 
-// Export the functions for use in other parts of the application
-export { signUp, verify, signIn };
+// Confirm sign-up
+export const confirmSignUp = async (
+  email: string,
+  confirmationCode: string
+) => {
+  const clientId = process.env.COGNITO_CLIENT_ID!;
+  const clientSecret = process.env.COGNITO_CLIENT_SECRET!;
+  const secretHash = generateSecretHash(email, clientId, clientSecret);
+
+  const command = new ConfirmSignUpCommand({
+    ClientId: clientId,
+    Username: email,
+    ConfirmationCode: confirmationCode,
+    SecretHash: secretHash,
+  });
+
+  return cognitoClient.send(command);
+};
+
+// Delete user
+export const deleteUser = async (email: string) => {
+  const command = new AdminDeleteUserCommand({
+    UserPoolId: process.env.COGNITO_USER_POOL_ID!,
+    Username: email,
+  });
+  return cognitoClient.send(command);
+};

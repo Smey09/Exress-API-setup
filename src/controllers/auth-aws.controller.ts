@@ -1,37 +1,63 @@
-import { Controller, Post, Route, Body } from "tsoa";
-import * as CognitoService from "../services/AwsAuth.service";
+// src/controllers/auth-aws.controller.ts
+import { Body, Controller, Post, Delete, Route, Tags } from "tsoa";
+import {
+  signUpUser,
+  signInUser,
+  confirmSignUp,
+  deleteUser,
+} from "../services/AwsAuth.service";
 
-@Route("auth")
-export class CognitoController extends Controller {
-  @Post("sign-up")
-  public async signUp(
-    @Body() requestBody: { email: string; password: string; agent?: string }
-  ) {
-    const response = await CognitoService.signUp(
-      requestBody.email,
-      requestBody.password,
-      requestBody.agent
-    );
-    return response;
+// Define the route and tags for the controller
+@Route("auth") // All routes in this controller will be prefixed with '/auth'
+@Tags("AuthAWS")
+export class AuthAWSController extends Controller {
+  // Sign-up user
+  @Post("signup")
+  public async signUp(@Body() body: { email: string; password: string }) {
+    const { email, password } = body;
+    try {
+      const result = await signUpUser(email, password);
+      return { message: "User signed up successfully", result };
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
   }
 
-  @Post("verify")
-  public async verify(@Body() requestBody: { email: string; code: string }) {
-    const response = await CognitoService.verify(
-      requestBody.email
-      //   requestBody.code
-    );
-    return response;
+  // Sign-in user
+  @Post("signin")
+  public async signIn(@Body() body: { email: string; password: string }) {
+    const { email, password } = body;
+    try {
+      const result = await signInUser(email, password);
+      return { message: "User signed in successfully", result };
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
   }
 
-  @Post("sign-in")
-  public async signIn(
-    @Body() requestBody: { email: string; password: string }
+  // Confirm sign-up
+  @Post("confirm")
+  public async confirmUserSignUp(
+    @Body() body: { email: string; confirmationCode: string }
   ) {
-    const response = await CognitoService.signIn(
-      requestBody.email,
-      requestBody.password
-    );
-    return response;
+    const { email, confirmationCode } = body;
+    try {
+      const result = await confirmSignUp(email, confirmationCode);
+      return { message: "User confirmed successfully", result };
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
+
+  // Delete user
+  @Delete("delete")
+  public async removeUser(@Body() body: { email: string }) {
+    const { email } = body;
+    try {
+      const result = await deleteUser(email);
+      return { message: "User deleted successfully", result };
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
   }
 }
