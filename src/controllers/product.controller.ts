@@ -46,7 +46,6 @@ export class ProductController extends Controller {
 
   @Post()
   @Response(201, "Created Success")
-  @Response(400, "Bad Request")
   @Middlewares(validateRequest(productCreateSchema))
   public async createItem(
     @Body() requestBody: ProductCreateRequest

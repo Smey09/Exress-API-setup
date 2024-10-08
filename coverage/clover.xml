@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1727369806173" clover="3.2.0">
-  <project timestamp="1727369806173" name="All files">
+<coverage generated="1727426443000" clover="3.2.0">
+  <project timestamp="1727426443000" name="All files">
     <metrics statements="183" coveredstatements="86" conditionals="34" coveredconditionals="11" methods="31" coveredmethods="17" elements="248" coveredelements="114" complexity="0" loc="183" ncloc="183" packages="8" files="9" classes="9"/>
     <package name="controllers">
       <metrics statements="67" coveredstatements="25" conditionals="9" coveredconditionals="0" methods="13" coveredmethods="5"/>
@@ -17,27 +17,27 @@
         <line num="35" count="1" type="stmt"/>
         <line num="40" count="0" type="stmt"/>
         <line num="43" count="0" type="stmt"/>
-        <line num="51" count="1" type="stmt"/>
+        <line num="50" count="1" type="stmt"/>
+        <line num="53" count="1" type="stmt"/>
         <line num="54" count="1" type="stmt"/>
         <line num="55" count="1" type="stmt"/>
         <line num="56" count="1" type="stmt"/>
-        <line num="57" count="1" type="stmt"/>
+        <line num="66" count="0" type="stmt"/>
         <line num="67" count="0" type="stmt"/>
-        <line num="68" count="0" type="stmt"/>
+        <line num="72" count="1" type="stmt"/>
         <line num="73" count="1" type="stmt"/>
         <line num="74" count="1" type="stmt"/>
         <line num="75" count="1" type="stmt"/>
-        <line num="76" count="1" type="stmt"/>
-        <line num="81" count="0" type="stmt"/>
-        <line num="86" count="1" type="stmt"/>
+        <line num="80" count="0" type="stmt"/>
+        <line num="85" count="1" type="stmt"/>
+        <line num="89" count="1" type="stmt"/>
         <line num="90" count="1" type="stmt"/>
-        <line num="91" count="1" type="stmt"/>
-        <line num="95" count="1" type="stmt"/>
-        <line num="97" count="0" type="stmt"/>
+        <line num="94" count="1" type="stmt"/>
+        <line num="96" count="0" type="stmt"/>
+        <line num="102" count="1" type="stmt"/>
         <line num="103" count="1" type="stmt"/>
         <line num="104" count="1" type="stmt"/>
-        <line num="105" count="1" type="stmt"/>
-        <line num="107" count="0" type="stmt"/>
+        <line num="106" count="0" type="stmt"/>
       </file>
       <file name="uploadImage.controller.ts" path="/Users/smey/Documents/SABAICODE-BOOTCAMP-5/Beck-end/Basic-NodeJS-Application/express-part-01/src/controllers/uploadImage.controller.ts">
         <metrics statements="35" coveredstatements="0" conditionals="9" coveredconditionals="0" methods="8" coveredmethods="0"/>

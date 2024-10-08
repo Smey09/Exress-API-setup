@@ -1,10 +1,14 @@
-import Image from "next/image";
-import ProductUploadForm from "./components/ProductUploadForm";
+import React from "react";
+import CountdownTimer from "./components/CountdownTimer"; // Adjust the path based on your file structure
 
-export default function Home() {
+const App: React.FC = () => {
+  const goldTime = "28 Sep 2024 6:30:00";
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <ProductUploadForm />
-    </main>
+    <div className="min-h-screen flex items-center justify-center bg-black">
+      <CountdownTimer goldTime={goldTime} />
+    </div>
   );
-}
+};
+
+export default App;
