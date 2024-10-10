@@ -410,6 +410,90 @@
 				]
 			}
 		},
+		"/v1/auth/google": {
+			"get": {
+				"operationId": "GoogleSignIn",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"url": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"url"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					}
+				},
+				"description": "Redirect user to Google OAuth for sign-in",
+				"tags": [
+					"GoogleAuth"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/v1/auth/google/callback": {
+			"get": {
+				"operationId": "GoogleCallback",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					},
+					"500": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Handle Google OAuth callback and authenticate user.",
+				"tags": [
+					"GoogleAuth"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "Google OAuth authorization code.",
+						"in": "query",
+						"name": "code",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
 		"/v1/auth/signup": {
 			"post": {
 				"operationId": "SignUp",

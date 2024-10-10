@@ -1,5 +1,5 @@
 // src/repositories/user.repository.ts
-import User, { IUser } from "../models/user.models";
+import User, { IUser } from "@/database/models/user.models";
 
 class UserRepository {
   async createUser(email: string, cognitoUserId: string): Promise<IUser> {
