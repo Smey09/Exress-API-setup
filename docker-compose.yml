@@ -27,6 +27,9 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=amdin
       - MONGO_INITDB_ROOT_PASSWORD=smey09
+      - DOCKER_ENV=true
+      - USER_SERVICE_URL=http://user:4002
+      - NOTIFICATION_SERVICE_URL=http://notification:4009
     volumes:
       - mongo_data:/data/db
 

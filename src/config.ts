@@ -17,7 +17,9 @@ function loadConfig(): Config {
   const env = process.env.NODE_ENV || "development";
 
   // Ensure correct path to environment file
-  const envPath = path.resolve(__dirname, `../configs/.env.${env}`);
+  const envPath = path.resolve(__dirname, `./configs/.env.${env}`);
+
+  console.log(`Loading environment from: ${envPath}`);
 
   // Load .env file based on the environment
   dotenv.config({ path: envPath });

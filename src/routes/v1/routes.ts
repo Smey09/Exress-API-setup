@@ -5,7 +5,7 @@ import { TsoaRoute, fetchMiddlewares, ExpressTemplateService } from '@tsoa/runti
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { ProductController } from './../../controllers/product.controller';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { AuthAWSController } from './../../controllers/auth-aws.controller';
+import { CognitoController } from './../../controllers/auth-aws.controller';
 import type { Request as ExRequest, Response as ExResponse, RequestHandler, Router } from 'express';
 
 
@@ -78,79 +78,37 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "DeliveryMediumType": {
-        "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["EMAIL"]},{"dataType":"enum","enums":["SMS"]}],"validators":{}},
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "CodeDeliveryDetailsType": {
+    "SignUpRequest": {
         "dataType": "refObject",
         "properties": {
-            "Destination": {"dataType":"string"},
-            "DeliveryMedium": {"ref":"DeliveryMediumType"},
-            "AttributeName": {"dataType":"string"},
+            "email": {"dataType":"string","required":true},
+            "password": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ResponseMetadata": {
+    "SignInRequest": {
         "dataType": "refObject",
         "properties": {
-            "httpStatusCode": {"dataType":"double"},
-            "requestId": {"dataType":"string"},
-            "extendedRequestId": {"dataType":"string"},
-            "cfId": {"dataType":"string"},
-            "attempts": {"dataType":"double"},
-            "totalRetryDelay": {"dataType":"double"},
+            "email": {"dataType":"string","required":true},
+            "password": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "SignUpCommandOutput": {
+    "ConfirmSignUpRequest": {
         "dataType": "refObject",
         "properties": {
-            "UserConfirmed": {"dataType":"union","subSchemas":[{"dataType":"boolean"},{"dataType":"undefined"}],"required":true},
-            "CodeDeliveryDetails": {"ref":"CodeDeliveryDetailsType"},
-            "UserSub": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"undefined"}],"required":true},
-            "$metadata": {"ref":"ResponseMetadata","required":true},
+            "email": {"dataType":"string","required":true},
+            "confirmationCode": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "NewDeviceMetadataType": {
+    "DeleteUserRequest": {
         "dataType": "refObject",
         "properties": {
-            "DeviceKey": {"dataType":"string"},
-            "DeviceGroupKey": {"dataType":"string"},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "AuthenticationResultType": {
-        "dataType": "refObject",
-        "properties": {
-            "AccessToken": {"dataType":"string"},
-            "ExpiresIn": {"dataType":"double"},
-            "TokenType": {"dataType":"string"},
-            "RefreshToken": {"dataType":"string"},
-            "IdToken": {"dataType":"string"},
-            "NewDeviceMetadata": {"ref":"NewDeviceMetadataType"},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ConfirmSignUpCommandOutput": {
-        "dataType": "refObject",
-        "properties": {
-            "$metadata": {"ref":"ResponseMetadata","required":true},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "AdminDeleteUserCommandOutput": {
-        "dataType": "refObject",
-        "properties": {
-            "$metadata": {"ref":"ResponseMetadata","required":true},
+            "email": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },
@@ -323,13 +281,13 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/auth/signup',
-            ...(fetchMiddlewares<RequestHandler>(AuthAWSController)),
-            ...(fetchMiddlewares<RequestHandler>(AuthAWSController.prototype.signUp)),
+        app.post('/v1/auth/signup',
+            ...(fetchMiddlewares<RequestHandler>(CognitoController)),
+            ...(fetchMiddlewares<RequestHandler>(CognitoController.prototype.signUp)),
 
-            async function AuthAWSController_signUp(request: ExRequest, response: ExResponse, next: any) {
+            async function CognitoController_signUp(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"password":{"dataType":"string","required":true},"email":{"dataType":"string","required":true}}},
+                    requestBody: {"in":"body","name":"requestBody","required":true,"ref":"SignUpRequest"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -338,7 +296,7 @@ export function RegisterRoutes(app: Router) {
             try {
                 validatedArgs = templateService.getValidatedArgs({ args, request, response });
 
-                const controller = new AuthAWSController();
+                const controller = new CognitoController();
 
               await templateService.apiHandler({
                 methodName: 'signUp',
@@ -346,20 +304,20 @@ export function RegisterRoutes(app: Router) {
                 response,
                 next,
                 validatedArgs,
-                successStatus: undefined,
+                successStatus: 201,
               });
             } catch (err) {
                 return next(err);
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/auth/signin',
-            ...(fetchMiddlewares<RequestHandler>(AuthAWSController)),
-            ...(fetchMiddlewares<RequestHandler>(AuthAWSController.prototype.signIn)),
+        app.post('/v1/auth/signin',
+            ...(fetchMiddlewares<RequestHandler>(CognitoController)),
+            ...(fetchMiddlewares<RequestHandler>(CognitoController.prototype.signIn)),
 
-            async function AuthAWSController_signIn(request: ExRequest, response: ExResponse, next: any) {
+            async function CognitoController_signIn(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"password":{"dataType":"string","required":true},"email":{"dataType":"string","required":true}}},
+                    requestBody: {"in":"body","name":"requestBody","required":true,"ref":"SignInRequest"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -368,7 +326,7 @@ export function RegisterRoutes(app: Router) {
             try {
                 validatedArgs = templateService.getValidatedArgs({ args, request, response });
 
-                const controller = new AuthAWSController();
+                const controller = new CognitoController();
 
               await templateService.apiHandler({
                 methodName: 'signIn',
@@ -383,13 +341,13 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/auth/confirm',
-            ...(fetchMiddlewares<RequestHandler>(AuthAWSController)),
-            ...(fetchMiddlewares<RequestHandler>(AuthAWSController.prototype.confirmUserSignUp)),
+        app.post('/v1/auth/confirm',
+            ...(fetchMiddlewares<RequestHandler>(CognitoController)),
+            ...(fetchMiddlewares<RequestHandler>(CognitoController.prototype.confirmSignUp)),
 
-            async function AuthAWSController_confirmUserSignUp(request: ExRequest, response: ExResponse, next: any) {
+            async function CognitoController_confirmSignUp(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"confirmationCode":{"dataType":"string","required":true},"email":{"dataType":"string","required":true}}},
+                    requestBody: {"in":"body","name":"requestBody","required":true,"ref":"ConfirmSignUpRequest"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -398,10 +356,10 @@ export function RegisterRoutes(app: Router) {
             try {
                 validatedArgs = templateService.getValidatedArgs({ args, request, response });
 
-                const controller = new AuthAWSController();
+                const controller = new CognitoController();
 
               await templateService.apiHandler({
-                methodName: 'confirmUserSignUp',
+                methodName: 'confirmSignUp',
                 controller,
                 response,
                 next,
@@ -413,13 +371,13 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.delete('/auth/delete',
-            ...(fetchMiddlewares<RequestHandler>(AuthAWSController)),
-            ...(fetchMiddlewares<RequestHandler>(AuthAWSController.prototype.removeUser)),
+        app.delete('/v1/auth/delete',
+            ...(fetchMiddlewares<RequestHandler>(CognitoController)),
+            ...(fetchMiddlewares<RequestHandler>(CognitoController.prototype.deleteUser)),
 
-            async function AuthAWSController_removeUser(request: ExRequest, response: ExResponse, next: any) {
+            async function CognitoController_deleteUser(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"email":{"dataType":"string","required":true}}},
+                    requestBody: {"in":"body","name":"requestBody","required":true,"ref":"DeleteUserRequest"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -428,10 +386,10 @@ export function RegisterRoutes(app: Router) {
             try {
                 validatedArgs = templateService.getValidatedArgs({ args, request, response });
 
-                const controller = new AuthAWSController();
+                const controller = new CognitoController();
 
               await templateService.apiHandler({
-                methodName: 'removeUser',
+                methodName: 'deleteUser',
                 controller,
                 response,
                 next,

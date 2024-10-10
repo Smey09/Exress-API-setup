@@ -1,5 +1,14 @@
 // src/controllers/auth-aws.controller.ts
-import { Body, Controller, Post, Delete, Route, Tags } from "tsoa";
+
+import {
+  Body,
+  Controller,
+  Post,
+  Route,
+  SuccessResponse,
+  Delete,
+  Tags,
+} from "tsoa";
 import {
   signUpUser,
   signInUser,
@@ -7,26 +16,57 @@ import {
   deleteUser,
 } from "../services/AwsAuth.service";
 
-// Define the route and tags for the controller
-@Route("auth") // All routes in this controller will be prefixed with '/auth'
-@Tags("AuthAWS")
-export class AuthAWSController extends Controller {
-  // Sign-up user
+// Define request bodies for better type checking and documentation
+interface SignUpRequest {
+  email: string;
+  password: string;
+}
+
+interface SignInRequest {
+  email: string;
+  password: string;
+}
+
+interface ConfirmSignUpRequest {
+  email: string;
+  confirmationCode: string;
+}
+
+interface DeleteUserRequest {
+  email: string;
+}
+
+@Route("/v1/auth") // Define the base route for the controller
+@Tags("AuthCognito")
+export class CognitoController extends Controller {
+  /**
+   * Sign up a new user
+   * @param requestBody The user email and password
+   */
+  @SuccessResponse("201", "User signed up successfully") // Custom success response
   @Post("signup")
-  public async signUp(@Body() body: { email: string; password: string }) {
-    const { email, password } = body;
+  public async signUp(
+    @Body() requestBody: SignUpRequest
+  ): Promise<{ message: string; result: any }> {
+    const { email, password } = requestBody;
     try {
       const result = await signUpUser(email, password);
+      this.setStatus(201); // Set the response status code to 201
       return { message: "User signed up successfully", result };
     } catch (error: any) {
       throw new Error(error.message);
     }
   }
 
-  // Sign-in user
+  /**
+   * Sign in an existing user
+   * @param requestBody The user email and password
+   */
   @Post("signin")
-  public async signIn(@Body() body: { email: string; password: string }) {
-    const { email, password } = body;
+  public async signIn(
+    @Body() requestBody: SignInRequest
+  ): Promise<{ message: string; result: any }> {
+    const { email, password } = requestBody;
     try {
       const result = await signInUser(email, password);
       return { message: "User signed in successfully", result };
@@ -35,12 +75,15 @@ export class AuthAWSController extends Controller {
     }
   }
 
-  // Confirm sign-up
+  /**
+   * Confirm user sign up
+   * @param requestBody The user email and confirmation code
+   */
   @Post("confirm")
-  public async confirmUserSignUp(
-    @Body() body: { email: string; confirmationCode: string }
-  ) {
-    const { email, confirmationCode } = body;
+  public async confirmSignUp(
+    @Body() requestBody: ConfirmSignUpRequest
+  ): Promise<{ message: string; result: any }> {
+    const { email, confirmationCode } = requestBody;
     try {
       const result = await confirmSignUp(email, confirmationCode);
       return { message: "User confirmed successfully", result };
@@ -49,10 +92,15 @@ export class AuthAWSController extends Controller {
     }
   }
 
-  // Delete user
+  /**
+   * Delete a user
+   * @param requestBody The user email
+   */
   @Delete("delete")
-  public async removeUser(@Body() body: { email: string }) {
-    const { email } = body;
+  public async deleteUser(
+    @Body() requestBody: DeleteUserRequest
+  ): Promise<{ message: string; result: any }> {
+    const { email } = requestBody;
     try {
       const result = await deleteUser(email);
       return { message: "User deleted successfully", result };
@@ -61,3 +109,5 @@ export class AuthAWSController extends Controller {
     }
   }
 }
+
+export default CognitoController;

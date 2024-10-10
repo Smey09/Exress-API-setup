@@ -156,159 +156,62 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"DeliveryMediumType": {
-				"type": "string",
-				"enum": [
-					"EMAIL",
-					"SMS"
-				]
-			},
-			"CodeDeliveryDetailsType": {
-				"description": "<p>The delivery details for an email or SMS message that Amazon Cognito sent for authentication or\n            verification.</p>",
+			"SignUpRequest": {
 				"properties": {
-					"Destination": {
-						"type": "string",
-						"description": "<p>The email address or phone number destination where Amazon Cognito sent the code.</p>"
+					"email": {
+						"type": "string"
 					},
-					"DeliveryMedium": {
-						"$ref": "#/components/schemas/DeliveryMediumType",
-						"description": "<p>The method that Amazon Cognito used to send the code.</p>"
-					},
-					"AttributeName": {
-						"type": "string",
-						"description": "<p>The name of the attribute that Amazon Cognito verifies with the code.</p>"
-					}
-				},
-				"type": "object",
-				"additionalProperties": false
-			},
-			"ResponseMetadata": {
-				"properties": {
-					"httpStatusCode": {
-						"type": "number",
-						"format": "double",
-						"description": "The status code of the last HTTP response received for this operation."
-					},
-					"requestId": {
-						"type": "string",
-						"description": "A unique identifier for the last request sent for this operation. Often\nrequested by AWS service teams to aid in debugging."
-					},
-					"extendedRequestId": {
-						"type": "string",
-						"description": "A secondary identifier for the last request sent. Used for debugging."
-					},
-					"cfId": {
-						"type": "string",
-						"description": "A tertiary identifier for the last request sent. Used for debugging."
-					},
-					"attempts": {
-						"type": "number",
-						"format": "double",
-						"description": "The number of times this operation was attempted."
-					},
-					"totalRetryDelay": {
-						"type": "number",
-						"format": "double",
-						"description": "The total amount of time (in milliseconds) that was spent waiting between\nretry attempts."
-					}
-				},
-				"type": "object",
-				"additionalProperties": false
-			},
-			"SignUpCommandOutput": {
-				"properties": {
-					"UserConfirmed": {
-						"type": "boolean",
-						"description": "<p>A response from the server indicating that a user registration has been\n            confirmed.</p>"
-					},
-					"CodeDeliveryDetails": {
-						"$ref": "#/components/schemas/CodeDeliveryDetailsType",
-						"description": "<p>The code delivery details returned by the server response to the user registration\n            request.</p>"
-					},
-					"UserSub": {
-						"type": "string",
-						"description": "<p>The 128-bit ID of the authenticated user. This isn't the same as\n            <code>username</code>.</p>"
-					},
-					"$metadata": {
-						"$ref": "#/components/schemas/ResponseMetadata",
-						"description": "Metadata pertaining to this request."
+					"password": {
+						"type": "string"
 					}
 				},
 				"required": [
-					"$metadata"
+					"email",
+					"password"
 				],
 				"type": "object",
 				"additionalProperties": false
 			},
-			"NewDeviceMetadataType": {
-				"description": "<p>The new device metadata type.</p>",
+			"SignInRequest": {
 				"properties": {
-					"DeviceKey": {
-						"type": "string",
-						"description": "<p>The device key.</p>"
+					"email": {
+						"type": "string"
 					},
-					"DeviceGroupKey": {
-						"type": "string",
-						"description": "<p>The device group key.</p>"
-					}
-				},
-				"type": "object",
-				"additionalProperties": false
-			},
-			"AuthenticationResultType": {
-				"description": "<p>The authentication result.</p>",
-				"properties": {
-					"AccessToken": {
-						"type": "string",
-						"description": "<p>A valid access token that Amazon Cognito issued to the user who you want to\n            authenticate.</p>"
-					},
-					"ExpiresIn": {
-						"type": "number",
-						"format": "double",
-						"description": "<p>The expiration period of the authentication result in seconds.</p>"
-					},
-					"TokenType": {
-						"type": "string",
-						"description": "<p>The token type.</p>"
-					},
-					"RefreshToken": {
-						"type": "string",
-						"description": "<p>The refresh token.</p>"
-					},
-					"IdToken": {
-						"type": "string",
-						"description": "<p>The ID token.</p>"
-					},
-					"NewDeviceMetadata": {
-						"$ref": "#/components/schemas/NewDeviceMetadataType",
-						"description": "<p>The new device metadata from an authentication result.</p>"
-					}
-				},
-				"type": "object",
-				"additionalProperties": false
-			},
-			"ConfirmSignUpCommandOutput": {
-				"properties": {
-					"$metadata": {
-						"$ref": "#/components/schemas/ResponseMetadata",
-						"description": "Metadata pertaining to this request."
+					"password": {
+						"type": "string"
 					}
 				},
 				"required": [
-					"$metadata"
+					"email",
+					"password"
 				],
 				"type": "object",
 				"additionalProperties": false
 			},
-			"AdminDeleteUserCommandOutput": {
+			"ConfirmSignUpRequest": {
 				"properties": {
-					"$metadata": {
-						"$ref": "#/components/schemas/ResponseMetadata",
-						"description": "Metadata pertaining to this request."
+					"email": {
+						"type": "string"
+					},
+					"confirmationCode": {
+						"type": "string"
 					}
 				},
 				"required": [
-					"$metadata"
+					"email",
+					"confirmationCode"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"DeleteUserRequest": {
+				"properties": {
+					"email": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"email"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -340,6 +243,9 @@
 						}
 					}
 				},
+				"tags": [
+					"Product"
+				],
 				"security": [],
 				"parameters": [
 					{
@@ -395,6 +301,9 @@
 						"description": "Created Success"
 					}
 				},
+				"tags": [
+					"Product"
+				],
 				"security": [],
 				"parameters": [],
 				"requestBody": {
@@ -424,6 +333,9 @@
 						}
 					}
 				},
+				"tags": [
+					"Product"
+				],
 				"security": [],
 				"parameters": [
 					{
@@ -450,6 +362,9 @@
 						}
 					}
 				},
+				"tags": [
+					"Product"
+				],
 				"security": [],
 				"parameters": [
 					{
@@ -479,6 +394,9 @@
 						"description": "No content"
 					}
 				},
+				"tags": [
+					"Product"
+				],
 				"security": [],
 				"parameters": [
 					{
@@ -492,19 +410,17 @@
 				]
 			}
 		},
-		"/auth/signup": {
+		"/v1/auth/signup": {
 			"post": {
 				"operationId": "SignUp",
 				"responses": {
-					"200": {
-						"description": "Ok",
+					"201": {
+						"description": "User signed up successfully",
 						"content": {
 							"application/json": {
 								"schema": {
 									"properties": {
-										"result": {
-											"$ref": "#/components/schemas/SignUpCommandOutput"
-										},
+										"result": {},
 										"message": {
 											"type": "string"
 										}
@@ -519,36 +435,27 @@
 						}
 					}
 				},
+				"description": "Sign up a new user",
 				"tags": [
-					"AuthAWS"
+					"AuthCognito"
 				],
 				"security": [],
 				"parameters": [],
 				"requestBody": {
+					"description": "The user email and password",
 					"required": true,
 					"content": {
 						"application/json": {
 							"schema": {
-								"properties": {
-									"password": {
-										"type": "string"
-									},
-									"email": {
-										"type": "string"
-									}
-								},
-								"required": [
-									"password",
-									"email"
-								],
-								"type": "object"
+								"$ref": "#/components/schemas/SignUpRequest",
+								"description": "The user email and password"
 							}
 						}
 					}
 				}
 			}
 		},
-		"/auth/signin": {
+		"/v1/auth/signin": {
 			"post": {
 				"operationId": "SignIn",
 				"responses": {
@@ -558,9 +465,7 @@
 							"application/json": {
 								"schema": {
 									"properties": {
-										"result": {
-											"$ref": "#/components/schemas/AuthenticationResultType"
-										},
+										"result": {},
 										"message": {
 											"type": "string"
 										}
@@ -575,38 +480,29 @@
 						}
 					}
 				},
+				"description": "Sign in an existing user",
 				"tags": [
-					"AuthAWS"
+					"AuthCognito"
 				],
 				"security": [],
 				"parameters": [],
 				"requestBody": {
+					"description": "The user email and password",
 					"required": true,
 					"content": {
 						"application/json": {
 							"schema": {
-								"properties": {
-									"password": {
-										"type": "string"
-									},
-									"email": {
-										"type": "string"
-									}
-								},
-								"required": [
-									"password",
-									"email"
-								],
-								"type": "object"
+								"$ref": "#/components/schemas/SignInRequest",
+								"description": "The user email and password"
 							}
 						}
 					}
 				}
 			}
 		},
-		"/auth/confirm": {
+		"/v1/auth/confirm": {
 			"post": {
-				"operationId": "ConfirmUserSignUp",
+				"operationId": "ConfirmSignUp",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -614,9 +510,7 @@
 							"application/json": {
 								"schema": {
 									"properties": {
-										"result": {
-											"$ref": "#/components/schemas/ConfirmSignUpCommandOutput"
-										},
+										"result": {},
 										"message": {
 											"type": "string"
 										}
@@ -631,38 +525,29 @@
 						}
 					}
 				},
+				"description": "Confirm user sign up",
 				"tags": [
-					"AuthAWS"
+					"AuthCognito"
 				],
 				"security": [],
 				"parameters": [],
 				"requestBody": {
+					"description": "The user email and confirmation code",
 					"required": true,
 					"content": {
 						"application/json": {
 							"schema": {
-								"properties": {
-									"confirmationCode": {
-										"type": "string"
-									},
-									"email": {
-										"type": "string"
-									}
-								},
-								"required": [
-									"confirmationCode",
-									"email"
-								],
-								"type": "object"
+								"$ref": "#/components/schemas/ConfirmSignUpRequest",
+								"description": "The user email and confirmation code"
 							}
 						}
 					}
 				}
 			}
 		},
-		"/auth/delete": {
+		"/v1/auth/delete": {
 			"delete": {
-				"operationId": "RemoveUser",
+				"operationId": "DeleteUser",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -670,9 +555,7 @@
 							"application/json": {
 								"schema": {
 									"properties": {
-										"result": {
-											"$ref": "#/components/schemas/AdminDeleteUserCommandOutput"
-										},
+										"result": {},
 										"message": {
 											"type": "string"
 										}
@@ -687,25 +570,20 @@
 						}
 					}
 				},
+				"description": "Delete a user",
 				"tags": [
-					"AuthAWS"
+					"AuthCognito"
 				],
 				"security": [],
 				"parameters": [],
 				"requestBody": {
+					"description": "The user email",
 					"required": true,
 					"content": {
 						"application/json": {
 							"schema": {
-								"properties": {
-									"email": {
-										"type": "string"
-									}
-								},
-								"required": [
-									"email"
-								],
-								"type": "object"
+								"$ref": "#/components/schemas/DeleteUserRequest",
+								"description": "The user email"
 							}
 						}
 					}

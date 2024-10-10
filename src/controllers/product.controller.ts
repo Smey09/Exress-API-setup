@@ -10,6 +10,7 @@ import {
   Delete,
   Middlewares,
   Queries,
+  Tags,
 } from "tsoa";
 import {
   ProductCreateRequest,
@@ -25,6 +26,7 @@ import {
 import productCreateSchema from "../schema/product.schema";
 
 @Route("v1/products")
+@Tags("Product")
 export class ProductController extends Controller {
   @Get()
   public async getAllProducts(
