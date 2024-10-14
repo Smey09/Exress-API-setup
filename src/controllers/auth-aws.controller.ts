@@ -37,7 +37,7 @@ interface DeleteUserRequest {
 }
 
 @Route("/v1/auth") // Define the base route for the controller
-@Tags("AuthCognito")
+@Tags("Auth AWS Cognito")
 export class CognitoController extends Controller {
   /**
    * Sign up a new user

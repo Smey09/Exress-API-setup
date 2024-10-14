@@ -156,6 +156,19 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"GoogleSignOutRequest": {
+				"description": "Request type for Google Sign-Out, requiring a refresh token.",
+				"properties": {
+					"refreshToken": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"refreshToken"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"SignUpRequest": {
 				"properties": {
 					"email": {
@@ -412,9 +425,12 @@
 		},
 		"/v1/auth/google": {
 			"get": {
-				"operationId": "GoogleSignIn",
+				"operationId": "InitiateGoogleSignIn",
 				"responses": {
-					"200": {
+					"204": {
+						"description": "No content"
+					},
+					"302": {
 						"description": "",
 						"content": {
 							"application/json": {
@@ -432,11 +448,27 @@
 							}
 						}
 					},
-					"204": {
-						"description": "No content"
+					"500": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"error"
+									],
+									"type": "object"
+								}
+							}
+						}
 					}
 				},
-				"description": "Redirect user to Google OAuth for sign-in",
+				"description": "Initiate Google Sign-In",
+				"summary": "Initiates the Google Sign-In process and redirects to Google's authorization page.",
 				"tags": [
 					"GoogleAuth"
 				],
@@ -448,42 +480,37 @@
 			"get": {
 				"operationId": "GoogleCallback",
 				"responses": {
-					"200": {
-						"description": "",
-						"content": {
-							"application/json": {
-								"schema": {}
-							}
-						}
-					},
 					"204": {
 						"description": "No content"
 					},
-					"400": {
-						"description": "",
-						"content": {
-							"application/json": {
-								"schema": {}
-							}
-						}
-					},
 					"500": {
-						"description": "",
+						"description": "- Error response in case of a failure.",
 						"content": {
 							"application/json": {
-								"schema": {}
+								"schema": {
+									"properties": {
+										"error": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"error"
+									],
+									"type": "object"
+								}
 							}
 						}
 					}
 				},
-				"description": "Handle Google OAuth callback and authenticate user.",
+				"description": "Google Callback",
+				"summary": "Handles the callback from Google with the authorization code.",
 				"tags": [
 					"GoogleAuth"
 				],
 				"security": [],
 				"parameters": [
 					{
-						"description": "Google OAuth authorization code.",
+						"description": "- The authorization code provided by Google.",
 						"in": "query",
 						"name": "code",
 						"required": true,
@@ -492,6 +519,53 @@
 						}
 					}
 				]
+			}
+		},
+		"/v1/auth/signout": {
+			"post": {
+				"operationId": "HandleSignOut",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"500": {
+						"description": "- Error response in case of a failure.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"error": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"error"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"description": "Sign Out",
+				"summary": "Signs out the user by revoking the refresh token and clearing cookies.",
+				"tags": [
+					"GoogleAuth"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"description": "- Contains the refresh token required for signing out.",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/GoogleSignOutRequest",
+								"description": "- Contains the refresh token required for signing out."
+							}
+						}
+					}
+				}
 			}
 		},
 		"/v1/auth/signup": {
@@ -521,7 +595,7 @@
 				},
 				"description": "Sign up a new user",
 				"tags": [
-					"AuthCognito"
+					"Auth AWS Cognito"
 				],
 				"security": [],
 				"parameters": [],
@@ -566,7 +640,7 @@
 				},
 				"description": "Sign in an existing user",
 				"tags": [
-					"AuthCognito"
+					"Auth AWS Cognito"
 				],
 				"security": [],
 				"parameters": [],
@@ -611,7 +685,7 @@
 				},
 				"description": "Confirm user sign up",
 				"tags": [
-					"AuthCognito"
+					"Auth AWS Cognito"
 				],
 				"security": [],
 				"parameters": [],
@@ -656,7 +730,7 @@
 				},
 				"description": "Delete a user",
 				"tags": [
-					"AuthCognito"
+					"Auth AWS Cognito"
 				],
 				"security": [],
 				"parameters": [],

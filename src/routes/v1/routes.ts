@@ -5,7 +5,7 @@ import { TsoaRoute, fetchMiddlewares, ExpressTemplateService } from '@tsoa/runti
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { ProductController } from './../../controllers/product.controller';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { AuthGoogleController } from './../../controllers/authGoogle.controller';
+import { GoogleAuthController } from './../../controllers/authGoogle.controller';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { CognitoController } from './../../controllers/auth-aws.controller';
 import type { Request as ExRequest, Response as ExResponse, RequestHandler, Router } from 'express';
@@ -76,6 +76,14 @@ const models: TsoaRoute.Models = {
             "name": {"dataType":"string"},
             "category": {"dataType":"string"},
             "price": {"dataType":"double"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "GoogleSignOutRequest": {
+        "dataType": "refObject",
+        "properties": {
+            "refreshToken": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },
@@ -284,12 +292,13 @@ export function RegisterRoutes(app: Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/v1/auth/google',
-            ...(fetchMiddlewares<RequestHandler>(AuthGoogleController)),
-            ...(fetchMiddlewares<RequestHandler>(AuthGoogleController.prototype.googleSignIn)),
+            ...(fetchMiddlewares<RequestHandler>(GoogleAuthController)),
+            ...(fetchMiddlewares<RequestHandler>(GoogleAuthController.prototype.initiateGoogleSignIn)),
 
-            async function AuthGoogleController_googleSignIn(request: ExRequest, response: ExResponse, next: any) {
+            async function GoogleAuthController_initiateGoogleSignIn(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    res: {"in":"res","name":"200","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"url":{"dataType":"string","required":true}}},
+                    redirect: {"in":"res","name":"302","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"url":{"dataType":"string","required":true}}},
+                    errorResponse: {"in":"res","name":"500","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"error":{"dataType":"string","required":true}}},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -298,10 +307,10 @@ export function RegisterRoutes(app: Router) {
             try {
                 validatedArgs = templateService.getValidatedArgs({ args, request, response });
 
-                const controller = new AuthGoogleController();
+                const controller = new GoogleAuthController();
 
               await templateService.apiHandler({
-                methodName: 'googleSignIn',
+                methodName: 'initiateGoogleSignIn',
                 controller,
                 response,
                 next,
@@ -314,13 +323,14 @@ export function RegisterRoutes(app: Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/v1/auth/google/callback',
-            ...(fetchMiddlewares<RequestHandler>(AuthGoogleController)),
-            ...(fetchMiddlewares<RequestHandler>(AuthGoogleController.prototype.googleCallback)),
+            ...(fetchMiddlewares<RequestHandler>(GoogleAuthController)),
+            ...(fetchMiddlewares<RequestHandler>(GoogleAuthController.prototype.googleCallback)),
 
-            async function AuthGoogleController_googleCallback(request: ExRequest, response: ExResponse, next: any) {
+            async function GoogleAuthController_googleCallback(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
                     code: {"in":"query","name":"code","required":true,"dataType":"string"},
-                    res: {"in":"res","name":"500","required":true,"dataType":"any"},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    errorResponse: {"in":"res","name":"500","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"error":{"dataType":"string","required":true}}},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -329,10 +339,42 @@ export function RegisterRoutes(app: Router) {
             try {
                 validatedArgs = templateService.getValidatedArgs({ args, request, response });
 
-                const controller = new AuthGoogleController();
+                const controller = new GoogleAuthController();
 
               await templateService.apiHandler({
                 methodName: 'googleCallback',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/v1/auth/signout',
+            ...(fetchMiddlewares<RequestHandler>(GoogleAuthController)),
+            ...(fetchMiddlewares<RequestHandler>(GoogleAuthController.prototype.handleSignOut)),
+
+            async function GoogleAuthController_handleSignOut(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    requestBody: {"in":"body","name":"requestBody","required":true,"ref":"GoogleSignOutRequest"},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    errorResponse: {"in":"res","name":"500","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"error":{"dataType":"string","required":true}}},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new GoogleAuthController();
+
+              await templateService.apiHandler({
+                methodName: 'handleSignOut',
                 controller,
                 response,
                 next,

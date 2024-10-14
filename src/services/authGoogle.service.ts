@@ -1,62 +1,107 @@
-import axios from "axios";
+import { URLSearchParams } from "url";
 import dotenv from "dotenv";
+import path from "path";
+import { fetch } from "undici";  // Use fetch from undici
 
-dotenv.config();
+// Specify the path to your .env file
+dotenv.config({ path: path.resolve(__dirname, `../configs/.env.development`) });
 
-export class AuthService {
-  private googleAuthUrl = "https://accounts.google.com/o/oauth2/v2/auth";
-  private googleTokenUrl = "https://oauth2.googleapis.com/token";
-  private userInfoUrl = "https://www.googleapis.com/oauth2/v3/userinfo";
+const {
+  COGNITO_DOMAIN,
+  COGNITO_CLIENT_ID,
+  COGNITO_CLIENT_SECRET,
+  COGNITO_REDIRECT_URI,
+} = process.env;
 
-  /**
-   * Generate Google OAuth URL for sign-in.
-   * @returns Google OAuth URL
-   */
-  public generateGoogleAuthUrl(): string {
-    const queryParams = new URLSearchParams({
-      client_id: process.env.GOOGLE_CLIENT_ID!,
-      redirect_uri: `${process.env.BASE_URL}/auth/google/callback`,
-      response_type: "code",
-      scope: "openid profile email",
-      access_type: "offline",
-    }).toString();
+console.log("COGNITO_DOMAIN:", COGNITO_DOMAIN);
+console.log("COGNITO_CLIENT_ID:", COGNITO_CLIENT_ID);
+console.log("COGNITO_CLIENT_SECRET:", COGNITO_CLIENT_SECRET);
+console.log("COGNITO_REDIRECT_URI:", COGNITO_REDIRECT_URI);
 
-    return `${this.googleAuthUrl}?${queryParams}`;
+/**
+ * Generate the Google Sign-In URL.
+ * @returns The Google Sign-In URL to redirect the user.
+ */
+export const googleSignIn = (): string => {
+  if (!COGNITO_DOMAIN || !COGNITO_CLIENT_ID || !COGNITO_REDIRECT_URI) {
+    throw new Error(
+      "Missing environment variables: Ensure COGNITO_DOMAIN, COGNITO_CLIENT_ID, and COGNITO_REDIRECT_URI are defined"
+    );
   }
 
-  /**
-   * Exchange authorization code for tokens.
-   * @param code Google OAuth authorization code
-   * @returns Access and ID tokens
-   */
-  public async exchangeCodeForTokens(
-    code: string
-  ): Promise<{ id_token: string; access_token: string }> {
-    const response = await axios.post(this.googleTokenUrl, null, {
-      params: {
-        code,
-        client_id: process.env.GOOGLE_CLIENT_ID,
-        client_secret: process.env.GOOGLE_CLIENT_SECRET,
-        redirect_uri: `${process.env.BASE_URL}/auth/google/callback`,
-        grant_type: "authorization_code",
-      },
-    });
+  const state = Math.random().toString(36).substring(7); // Generate a random state
+  const authorizeParams = new URLSearchParams({
+    response_type: "code",
+    client_id: COGNITO_CLIENT_ID as string,
+    redirect_uri: COGNITO_REDIRECT_URI as string,
+    state: state,
+    identity_provider: "Google",
+    scope: "openid profile email",
+  });
 
-    return response.data;
+  return `${COGNITO_DOMAIN}/oauth2/authorize?${authorizeParams.toString()}`;
+};
+
+/**
+ * Exchange the authorization code from Google for Cognito tokens.
+ * @param code - The authorization code received from Google.
+ * @returns Cognito tokens, including access, ID, and refresh tokens.
+ */
+export const exchangeCodeForTokens = async (code: string): Promise<any> => {
+  const authorizationHeader = `Basic ${Buffer.from(
+    `${COGNITO_CLIENT_ID}:${COGNITO_CLIENT_SECRET}`
+  ).toString("base64")}`;
+
+  const requestBody = new URLSearchParams({
+    grant_type: "authorization_code",
+    client_id: COGNITO_CLIENT_ID as string,
+    code: code,
+    redirect_uri: COGNITO_REDIRECT_URI as string,
+  });
+
+  const response = await fetch(`${COGNITO_DOMAIN}/oauth2/token`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Authorization: authorizationHeader,
+    },
+    body: requestBody.toString(),
+  });
+
+  const data: any = await response.json();
+  console.log("Response from token exchange:", data);
+
+  if (!response.ok) {
+    throw new Error(data.error || "Error exchanging code for tokens");
   }
 
-  /**
-   * Fetch user information from Google using the access token.
-   * @param accessToken Google access token
-   * @returns User information
-   */
-  public async getUserInfo(accessToken: string): Promise<any> {
-    const response = await axios.get(this.userInfoUrl, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+  return data;
+};
 
-    return response.data;
+/**
+ * Revoke the refresh token for signing out the user.
+ * @param refreshToken - The refresh token to be revoked.
+ */
+export const signOut = async (refreshToken: string): Promise<void> => {
+  const authorizationHeader = `Basic ${Buffer.from(
+    `${COGNITO_CLIENT_ID}:${COGNITO_CLIENT_SECRET}`
+  ).toString("base64")}`;
+
+  const requestBody = new URLSearchParams({
+    token: refreshToken,
+  });
+
+  const response = await fetch(`${COGNITO_DOMAIN}/oauth2/revoke`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Authorization: authorizationHeader,
+    },
+    body: requestBody.toString(),
+  });
+
+  if (!response.ok) {
+    const data: any = await response.json();
+    throw new Error(data.error || "Error revoking token");
   }
-}
+};
